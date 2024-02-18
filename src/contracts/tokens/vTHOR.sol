@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.10;
 
-import {ERC20Vote} from "../lib/ERC20Vote.sol";
-import {IERC20} from "./interfaces/IERC20.sol";
-import {IERC4626} from "./interfaces/IERC4626.sol";
-import {SafeTransferLib} from "../lib/SafeTransferLib.sol";
-import {FixedPointMathLib} from "../lib/FixedPointMathLib.sol";
-import {ReentrancyGuard} from "../lib/ReentrancyGuard.sol";
+import {ERC20Vote} from "../../lib/ERC20Vote.sol";
+import {IERC20} from "../../interfaces/IERC20.sol";
+import {IERC4626} from "../../interfaces/IERC4626.sol";
+import {SafeTransferLib} from "../../lib/SafeTransferLib.sol";
+import {FixedPointMathLib} from "../../lib/FixedPointMathLib.sol";
+import {ReentrancyGuard} from "../../lib/ReentrancyGuard.sol";
 
 contract vTHOR is IERC4626, ERC20Vote, ReentrancyGuard {
     using SafeTransferLib for address;

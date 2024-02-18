@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.10;
+
 interface IERC4626 {
     function asset() external view returns (address assetTokenAddress);
     function totalAssets() external view returns (uint256 totalManagedAssets);
