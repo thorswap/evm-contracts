@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.10;
 
-interface IThorchainRouter {
+interface IThorchainRouterV4 {
     function depositWithExpiry(
         address payable vault,
         address asset,
