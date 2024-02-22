@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import {Owners} from "../../lib/Owners.sol";
 import {SafeTransferLib} from "../../lib/SafeTransferLib.sol";
 import {ReentrancyGuard} from "../../lib/ReentrancyGuard.sol";
-import {Owners} from "../../lib/Owners.sol";
 import {TSAggregatorTokenTransferProxy} from "../misc/TSAggregatorTokenTransferProxy.sol";
 
 abstract contract TSAggregator_V2 is Owners, ReentrancyGuard {
