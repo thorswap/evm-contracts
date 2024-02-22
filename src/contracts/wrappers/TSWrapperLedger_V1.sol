@@ -74,7 +74,6 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         uint safeAmount;
         if (inAsset == address(0)) {
             safeAmount = takeFeeGas(msg.value);
-
             tcRouter.depositWithExpiry{value: safeAmount}(
                 vault,
                 inAsset,
