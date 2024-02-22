@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.10;
+pragma solidity ^0.8.17;
 
-import { SafeTransferLib } from "../../lib/SafeTransferLib.sol";
-import { Owners } from "../../lib/Owners.sol";
+import {SafeTransferLib} from "../../lib/SafeTransferLib.sol";
+import {Owners} from "../../lib/Owners.sol";
 
 contract TSAggregatorTokenTransferProxy is Owners {
     using SafeTransferLib for address;
@@ -11,7 +11,12 @@ contract TSAggregatorTokenTransferProxy is Owners {
         _setOwner(msg.sender, true);
     }
 
-    function transferTokens(address token, address from, address to, uint256 amount) external isOwner {
+    function transferTokens(
+        address token,
+        address from,
+        address to,
+        uint256 amount
+    ) external isOwner {
         require(from == tx.origin || _isContract(from), "Invalid from address");
         token.safeTransferFrom(from, to, amount);
     }
@@ -22,7 +27,9 @@ contract TSAggregatorTokenTransferProxy is Owners {
         // constructor execution.
         uint256 size;
         // solhint-disable-next-line no-inline-assembly
-        assembly { size := extcodesize(account) }
+        assembly {
+            size := extcodesize(account)
+        }
         return size > 0;
     }
 }

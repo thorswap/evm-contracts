@@ -17,17 +17,6 @@ const config: HardhatUserConfig = {
         },
       },
     }, {
-      version: "0.8.6",
-      settings: {
-        metadata: {
-          bytecodeHash: "none",
-        },
-        optimizer: {
-          enabled: true,
-          runs: 800,
-        },
-      },
-    }, {
       version: "0.8.10",
       settings: {
         optimizer: {
@@ -36,11 +25,16 @@ const config: HardhatUserConfig = {
         },
       },
     }, {
-      version: "0.8.17",
+      version: "0.8.23",
       settings: {
+        viaIR: true,
         optimizer: {
           enabled: true,
-          runs: 1000,
+          details: {
+            yulDetails: {
+              optimizerSteps: "u",
+            },
+          },
         },
       },
     }]

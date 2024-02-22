@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.10;
+pragma solidity ^0.8.17;
 
 import {SafeTransferLib} from "../../lib/SafeTransferLib.sol";
 import {ReentrancyGuard} from "../../lib/ReentrancyGuard.sol";
 import {Owners} from "../../lib/Owners.sol";
 import {TSAggregatorTokenTransferProxy} from "../misc/TSAggregatorTokenTransferProxy.sol";
 
-abstract contract TSAggregator is Owners, ReentrancyGuard {
+abstract contract TSAggregator_V1 is Owners, ReentrancyGuard {
     using SafeTransferLib for address;
 
     event FeeSet(uint256 fee, address feeRecipient);
@@ -46,14 +46,5 @@ abstract contract TSAggregator is Owners, ReentrancyGuard {
             return (amount * fee) / 10000;
         }
         return 0;
-    }
-
-    // Parse amountOutMin treating the last 2 digits as an exponent
-    // So 1504 = 150000. This allows for compressed memos on chains
-    // with limited space like Bitcoin
-    function _parseAmountOutMin(
-        uint256 amount
-    ) internal pure returns (uint256) {
-        return (amount / 100) * (10 ** (amount % 100));
     }
 }
