@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 // -------------------
 // Compatibility
 // TC Router V4
-// TS Memo Generator V1
+// TS Memo Generator Ledger V1
 // -------------------
 
 import {Owners} from "../../lib/Owners.sol";
