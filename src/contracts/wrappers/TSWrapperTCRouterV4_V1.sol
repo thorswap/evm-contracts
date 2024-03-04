@@ -29,11 +29,6 @@ contract TSWrapperTCRouterV4_V1 is Owners, TSAggregator_V3 {
         string memory memo,
         uint expiration
     ) public payable nonReentrant {
-        require(
-            block.timestamp < expiration,
-            "TSWrapperTCRouterV4: Transaction expired"
-        );
-
         uint safeAmount;
         if (asset == address(0)) {
             safeAmount = takeFeeGas(msg.value);
