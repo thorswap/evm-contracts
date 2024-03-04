@@ -1,16 +1,41 @@
-import { ethers } from "hardhat";
+import hre, { ethers } from "hardhat";
 
-const CONTRACT_NAME = "Lock";
-const CONTRACT_ARGS = [1620000000];
+import { TS_DEPLOYER_ADDRESS, FEE_RECIPIENT_ETH, TTP_ETH, TC_ROUTER_V4 } from "../hardhat.config";
+
+const CONTRACT_NAME = "TSWrapperTCRouterV4_V1";
+const CONTRACT_ARGS = [TTP_ETH, TC_ROUTER_V4];
 
 async function main() {
-    const contract = await ethers.deployContract(CONTRACT_NAME, CONTRACT_ARGS);
+    // get deployer
+    const accounts = await ethers.getSigners();
+    const deployer = accounts.find(account => account.address.toLowerCase() === TS_DEPLOYER_ADDRESS.toLowerCase());
 
+    if (!deployer) {
+        throw new Error("Deployer not found");
+    }
+
+    // deploy contract
+    const contract = await ethers.deployContract(CONTRACT_NAME, CONTRACT_ARGS);
     await contract.waitForDeployment();
 
     console.log(
         `Contract deployed to ${contract.target}`
     );
+
+    // verify contract
+    if (hre.network.name !== "hardhat") {
+        // wait a couple of blocks + time for indexing
+        await new Promise((resolve) => setTimeout(resolve, 30000));
+        await hre.run("verify:verify", {
+            address: contract.target,
+            constructorArguments: CONTRACT_ARGS,
+        });
+        console.log("Contract verified");
+    }
+
+    // optional: invoke methods
+    await contract.setFee(15, FEE_RECIPIENT_ETH)
+    console.log("Fee set");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
