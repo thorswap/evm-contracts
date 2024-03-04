@@ -1,14 +1,16 @@
 import hre, { ethers } from "hardhat";
 
-import { TS_DEPLOYER_ADDRESS, FEE_RECIPIENT_ETH, TTP_ETH, TC_ROUTER_V4 } from "../hardhat.config";
+import { TS_DEPLOYER_ADDRESS, FEE_RECIPIENT_ETH, TTP_ETH, TC_ROUTER_V4, HARDHAT_DEPLOYER_ADDRESS } from "../hardhat.config";
 
 const CONTRACT_NAME = "TSWrapperTCRouterV4_V1";
 const CONTRACT_ARGS = [TTP_ETH, TC_ROUTER_V4];
 
+const deployerAddress = hre.network.name !== "hardhat" ? TS_DEPLOYER_ADDRESS : HARDHAT_DEPLOYER_ADDRESS;
+
 async function main() {
     // get deployer
     const accounts = await ethers.getSigners();
-    const deployer = accounts.find(account => account.address.toLowerCase() === TS_DEPLOYER_ADDRESS.toLowerCase());
+    const deployer = accounts.find(account => account.address.toLowerCase() === deployerAddress.toLowerCase());
 
     if (!deployer) {
         throw new Error("Deployer not found");

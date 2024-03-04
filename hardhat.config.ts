@@ -10,6 +10,8 @@ export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 export const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
 
 // helpers
+export const HARDHAT_DEPLOYER_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+
 export const TTP_AVAX = "0x69ba883Af416fF5501D54D5e27A1f497fBD97156";
 export const TTP_BSC = "0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a";
 export const TTP_ETH = "0xF892Fef9dA200d9E84c9b0647ecFF0F34633aBe8";
@@ -58,6 +60,7 @@ const config: HardhatUserConfig = {
         viaIR: true,
         optimizer: {
           enabled: true,
+          runs: 200,
           // details: {
           //   yulDetails: {
           //     optimizerSteps: "u",
