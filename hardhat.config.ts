@@ -4,9 +4,14 @@ import "tsconfig-paths/register";
 
 require('dotenv').config();
 
-const TS_DEPLOYER_PK = process.env.TS_DEPLOYER_PRIVATE_KEY || "";
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
-const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
+export const TS_DEPLOYER_PK = process.env.TS_DEPLOYER_PRIVATE_KEY || "";
+export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
+export const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
+
+// helpers
+export const TTP_AVAX = "0x69ba883Af416fF5501D54D5e27A1f497fBD97156";
+export const TTP_BSC = "0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a";
+export const TTP_ETH = "0xF892Fef9dA200d9E84c9b0647ecFF0F34633aBe8";
 
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",

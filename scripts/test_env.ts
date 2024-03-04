@@ -1,9 +1,8 @@
 import { ethers } from "hardhat";
-
-require('dotenv').config();
+import { TTP_AVAX } from "../hardhat.config"
 
 async function main() {
-    console.log(process.env.LOCAL_PRIVATE_KEY);
+    console.log(TTP_AVAX);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
