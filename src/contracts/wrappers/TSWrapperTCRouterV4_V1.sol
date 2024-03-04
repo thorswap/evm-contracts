@@ -51,7 +51,7 @@ contract TSWrapperTCRouterV4_V1 is Owners, TSAggregator_V3 {
         address to,
         uint256 amountOutMin
     ) public payable nonReentrant {
-        uint safeAmount = takeFeeGas(msg.value);
+        uint256 safeAmount = takeFeeGas(msg.value);
         to.safeTransferETH(safeAmount);
     }
 }
