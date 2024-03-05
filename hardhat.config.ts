@@ -8,6 +8,7 @@ export const TS_DEPLOYER_PK = process.env.TS_DEPLOYER_PRIVATE_KEY || "";
 export const TS_DEPLOYER_ADDRESS = process.env.TS_DEPLOYER_PUBLIC_ADDRESS || "";
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 export const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
+export const CMC_API_KEY = process.env.CMC_API_KEY || "";
 
 // helpers
 export const HARDHAT_DEPLOYER_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
@@ -28,11 +29,19 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       enableTransientStorage: true,
+      gasPrice: 74e9
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [TS_DEPLOYER_PK],
     }
+  },
+  gasReporter: {
+    enabled: true,
+    currency: "USD",
+    noColors: false,
+    token: "ETH",
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   solidity: {
     compilers: [{
