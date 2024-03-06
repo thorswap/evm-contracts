@@ -1,9 +1,17 @@
 import hre, { ethers } from "hardhat";
 
-import { TS_DEPLOYER_ADDRESS, FEE_RECIPIENT_ETH, TTP_ETH, TC_ROUTER_V4, HARDHAT_DEPLOYER_ADDRESS } from "../hardhat.config";
+import {
+    TS_DEPLOYER_ADDRESS,
+    FEE_RECIPIENT_ETH,
+    TTP_ETH,
+    TC_ROUTER_V4,
+    HARDHAT_DEPLOYER_ADDRESS,
+    WETH_ETH,
+    UNISWAP_V2_ROUTER
+} from "../hardhat.config";
 
-const CONTRACT_NAME = "TSWrapperTCRouterV4_V1";
-const CONTRACT_ARGS = [TTP_ETH, TC_ROUTER_V4];
+const CONTRACT_NAME = "TSWrapperLedger_V1";
+const CONTRACT_ARGS = [TTP_ETH, WETH_ETH, UNISWAP_V2_ROUTER, TC_ROUTER_V4];
 
 const deployerAddress = hre.network.name !== "hardhat" ? TS_DEPLOYER_ADDRESS : HARDHAT_DEPLOYER_ADDRESS;
 
@@ -36,8 +44,8 @@ async function main() {
     }
 
     // optional: invoke methods
-    await contract.setFee(15, FEE_RECIPIENT_ETH)
-    console.log("Fee set");
+    // await contract.setFee(15, FEE_RECIPIENT_ETH)
+    // console.log("Fee set");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
