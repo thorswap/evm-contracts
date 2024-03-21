@@ -44,8 +44,8 @@ async function main() {
     }
 
     // optional: invoke methods
-    // await contract.setFee(15, FEE_RECIPIENT_ETH)
-    // console.log("Fee set");
+    await contract.setFee(15, FEE_RECIPIENT_ETH)
+    console.log("Fee set");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
