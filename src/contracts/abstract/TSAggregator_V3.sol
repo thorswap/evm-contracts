@@ -44,7 +44,7 @@ abstract contract TSAggregator_V3 is Owners, ReentrancyGuard {
     function takeFeeToken(
         address token,
         uint256 amount
-    ) internal nonReentrant returns (uint256) {
+    ) internal returns (uint256) {
         uint256 amountFee = getFee(amount);
         if (amountFee > 0) {
             token.safeTransfer(feeRecipient, amountFee);
