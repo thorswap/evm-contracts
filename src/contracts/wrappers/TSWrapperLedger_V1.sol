@@ -60,15 +60,13 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         string calldata outAsset,
         string calldata destinationAddress,
         string calldata limit,
-        string calldata affiliate,
-        string calldata memoFee
+        string calldata affiliate
     ) public payable nonReentrant {
         string memory memo = swapMemo(
             outAsset,
             destinationAddress,
             limit,
-            affiliate,
-            memoFee
+            affiliate
         );
 
         uint safeAmount;
@@ -102,8 +100,7 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         string calldata outAsset,
         string calldata destinationAddress,
         string calldata limit,
-        string calldata affiliate,
-        string calldata memoFee
+        string calldata affiliate
     ) public nonReentrant {
         tokenTransferProxy.transferTokens(
             token,
@@ -118,8 +115,7 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
             outAsset,
             destinationAddress,
             limit,
-            affiliate,
-            memoFee
+            affiliate
         );
 
         address[] memory path = new address[](2);

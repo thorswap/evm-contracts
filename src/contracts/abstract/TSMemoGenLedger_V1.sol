@@ -6,8 +6,7 @@ abstract contract TSMemoGenLedger_V1 {
         string calldata asset, // BNB.BNB
         string calldata destAddr, // bnb108n64knfm38f0mm23nkreqqmpc7rpcw89sqqw5
         string calldata limit, // 1231230/2/6
-        string calldata affiliate, // t
-        string calldata fee // 30
+        string calldata affiliate // t:30
     ) public pure returns (string memory) {
         return
             string(
@@ -19,9 +18,7 @@ abstract contract TSMemoGenLedger_V1 {
                     ":",
                     limit,
                     ":",
-                    affiliate,
-                    ":",
-                    fee
+                    affiliate
                 )
             );
     }
