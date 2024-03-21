@@ -122,7 +122,7 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         path[0] = token;
         path[1] = weth;
 
-        swapRouter.swapExactTokensForETH(
+        uint256[] memory amounts = swapRouter.swapExactTokensForETH(
             amount,
             amountOutMin,
             path,
@@ -130,9 +130,8 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
             deadline
         );
 
-        uint256 out = address(this).balance;
         {
-            uint256 outMinusFee = takeFeeGas(out);
+            uint256 outMinusFee = takeFeeGas(amounts[1]);
             tcRouter.depositWithExpiry{value: outMinusFee}(
                 payable(vault),
                 address(0),
@@ -146,8 +145,8 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
             msg.sender,
             token,
             amount,
-            out + getFee(out),
-            getFee(out),
+            amounts[1] + getFee(amounts[1]),
+            getFee(amounts[1]),
             vault,
             memo
         );
