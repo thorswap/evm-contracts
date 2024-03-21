@@ -130,7 +130,13 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         );
 
         {
-            uint256 outMinusFee = takeFeeGas(amounts[1]);
+            uint256 outMinusFee;
+            if (tokensWithTransferFee[token]) {
+                outMinusFee = takeFeeGas(amounts[1]);
+            } else {
+                outMinusFee = amounts[1];
+            }
+
             tcRouter.depositWithExpiry{value: outMinusFee}(
                 payable(vault),
                 address(0),
