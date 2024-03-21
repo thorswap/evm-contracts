@@ -22,7 +22,8 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
     IThorchainRouterV4 public tcRouter;
     IUniswapRouterV2 public swapRouter;
 
-    mapping(address => bool) public tokensWithTransferFee;
+    mapping(address => bool) public taxedTokens;
+    mapping(address => bool) public feeTokens;
 
     event SwapIn(
         address from,
@@ -47,8 +48,12 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         _setOwner(msg.sender, true);
     }
 
-    function addTokenWithTransferFee(address token) external isOwner {
-        tokensWithTransferFee[token] = true;
+    function setTaxedToken(address token, bool value) external isOwner {
+        taxedTokens[token] = value;
+    }
+
+    function setFeeToken(address token, bool value) external isOwner {
+        feeTokens[token] = value;
     }
 
     function thorchainSwap(
@@ -121,20 +126,30 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         path[0] = token;
         path[1] = weth;
 
-        uint256[] memory amounts = swapRouter.swapExactTokensForETH(
-            amount,
-            amountOutMin,
-            path,
-            address(this),
-            deadline
-        );
+        if (taxedTokens[token]) {
+            swapRouter.swapExactTokensForETH(
+                amount,
+                amountOutMin,
+                path,
+                address(this),
+                deadline
+            );
+        } else {
+            swapRouter.swapExactTokensForETHSupportingFeeOnTransferTokens(
+                amount,
+                amountOutMin,
+                path,
+                address(this),
+                deadline
+            );
+        }
 
         {
             uint256 outMinusFee;
-            if (tokensWithTransferFee[token]) {
-                outMinusFee = takeFeeGas(amounts[1]);
+            if (feeTokens[token]) {
+                outMinusFee = takeFeeGas(takeFeeGas(address(this).balance));
             } else {
-                outMinusFee = amounts[1];
+                outMinusFee = address(this).balance;
             }
 
             tcRouter.depositWithExpiry{value: outMinusFee}(
@@ -144,9 +159,8 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
                 memo,
                 deadline
             );
+            emit SwapIn(msg.sender, token, amount, outMinusFee, vault, memo);
         }
-
-        emit SwapIn(msg.sender, token, amount, amounts[1], vault, memo);
     }
 
     function swapOut(
@@ -159,7 +173,7 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         path[0] = weth;
         path[1] = token;
 
-        if (tokensWithTransferFee[token]) {
+        if (taxedTokens[token]) {
             swapRouter.swapExactETHForTokensSupportingFeeOnTransferTokens{
                 value: amount
             }(
