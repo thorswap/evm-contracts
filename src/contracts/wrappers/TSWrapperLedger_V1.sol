@@ -28,13 +28,12 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
         address from,
         address token,
         uint256 amount,
-        uint256 out,
-        uint256 fee,
+        uint256 aggAmount,
         address vault,
         string memo
     );
 
-    event SwapOut(address to, address token, uint256 amount, uint256 fee);
+    event SwapOut(address to, address token, uint256 amount);
 
     constructor(
         address _ttp,
@@ -141,15 +140,7 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
             );
         }
 
-        emit SwapIn(
-            msg.sender,
-            token,
-            amount,
-            amounts[1] + getFee(amounts[1]),
-            getFee(amounts[1]),
-            vault,
-            memo
-        );
+        emit SwapIn(msg.sender, token, amount, amounts[1], vault, memo);
     }
 
     function swapOut(
@@ -180,7 +171,7 @@ contract TSWrapperLedger_V1 is Owners, TSAggregator_V3, TSMemoGenLedger_V1 {
             );
         }
 
-        emit SwapOut(to, token, msg.value, msg.value - amount);
+        emit SwapOut(to, token, msg.value);
     }
 
     function uniswapV2Swap(
