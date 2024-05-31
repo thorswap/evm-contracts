@@ -7,6 +7,7 @@ require('dotenv').config();
 export const TS_DEPLOYER_PK = process.env.TS_DEPLOYER_PRIVATE_KEY || "";
 export const TS_DEPLOYER_ADDRESS = process.env.TS_DEPLOYER_PUBLIC_ADDRESS || "";
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
+export const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY || "";
 export const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
 export const CMC_API_KEY = process.env.CMC_API_KEY || "";
 
@@ -68,6 +69,20 @@ const config: HardhatUserConfig = {
       },
     }, {
       version: "0.8.17",
+      settings: {
+        viaIR: true,
+        optimizer: {
+          enabled: true,
+          runs: 200,
+          // details: {
+          //   yulDetails: {
+          //     optimizerSteps: "u",
+          //   },
+          // },
+        },
+      },
+    }, {
+      version: "0.8.22",
       settings: {
         viaIR: true,
         optimizer: {
