@@ -2,9 +2,9 @@ const { ethers } = require("hardhat");
 const { expect } = require("chai");
 
 describe("TSAggregatorChainflip_V1", function () {
-  let tsAggregatorChainflip: { deployed: () => any; addRouter: (arg0: any) => any; connect: (arg0: any) => { (): any; new(): any; cfReceive: { (arg0: number, arg1: any, arg2: any, arg3: any, arg4: any, arg5: { value: any; }): any; new(): any; }; }; };
+  let tsAggregatorChainflip: { waitForDeployment: () => any; addRouter: (arg0: any) => any; connect: (arg0: any) => { (): any; new(): any; cfReceive: { (arg0: number, arg1: any, arg2: any, arg3: any, arg4: any, arg5: { value: any; }): any; new(): any; }; }; };
   let owner, addr1: any;
-  let routerContract: { deployed: () => any; address: any; };
+  let routerContract: { waitForDeployment: () => any; address: any; };
 
   before(async function () {
     // Get signers
@@ -12,9 +12,11 @@ describe("TSAggregatorChainflip_V1", function () {
 
     // Deploy a mock router that implements IThorchainRouterV4
     routerContract = await ethers.deployContract("THORChain_Router", ["0x3155ba85d5f96b2d030a4966af206230e46849cb"]);
+    await routerContract.waitForDeployment();
 
     // Deploy the TSAggregatorChainflip_V1 contract
     tsAggregatorChainflip = await ethers.deployContract("TSAggregatorChainflip_V1", ["0xf892fef9da200d9e84c9b0647ecff0f34633abe8"]);
+    await tsAggregatorChainflip.waitForDeployment();
 
     // Add the mock router to the routers array
     await tsAggregatorChainflip.addRouter(routerContract.address);
