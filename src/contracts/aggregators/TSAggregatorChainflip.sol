@@ -21,11 +21,9 @@ contract TSAggregatorChainflip_V1 is Owners, TSAggregator_V4 {
     event CFReceive(
         uint32 srcChain,
         bytes srcAddress,
-        bytes message,
         address token,
         uint256 amount,
         address router,
-        address vault,
         string memo
     );
 
@@ -42,6 +40,7 @@ contract TSAggregatorChainflip_V1 is Owners, TSAggregator_V4 {
     function getRouterAddress(
         uint16 index
     ) public view returns (address) {
+        require(index < routers.length, "Invalid router index");
         return address(routers[index]);
     }
 
@@ -69,7 +68,9 @@ contract TSAggregatorChainflip_V1 is Owners, TSAggregator_V4 {
             );
         } else {
             uint256 _safeAmount = takeFeeToken(token, amount);
+            token.safeApprove(address(routers[_routerIndex]), 0);
             token.safeApprove(address(routers[_routerIndex]), _safeAmount);
+
             routers[_routerIndex].depositWithExpiry{value: 0}(
                 payable(_vault),
                 token,
@@ -82,11 +83,9 @@ contract TSAggregatorChainflip_V1 is Owners, TSAggregator_V4 {
         emit CFReceive(
             srcChain,
             srcAddress,
-            message,
             token,
             amount,
             address(routers[_routerIndex]),
-            _vault,
             _memo
         );
     }
