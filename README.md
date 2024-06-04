@@ -9,5 +9,8 @@ Install dependencies with `yarn install`.
 ## Compiling
 Compile contracts with `npx hardhat compile`.
 
+## Testing
+Simply `npx hardhat test`
+
 ## Deploying
 Carefully set up `./scripts/deploy.ts` and run `npx hardhat run --network mainnet ./scripts/deploy.ts`.
