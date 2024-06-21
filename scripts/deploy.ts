@@ -2,16 +2,18 @@ import hre, { ethers } from "hardhat";
 
 import {
     TS_DEPLOYER_ADDRESS,
+    BASE_WETH,
+    TTP_BASE,
     FEE_RECIPIENT_ETH,
-    TTP_ETH,
-    TC_ROUTER_V4,
     HARDHAT_DEPLOYER_ADDRESS,
-    WETH_ETH,
-    UNISWAP_V2_ROUTER
+    WOOFI_V2_ROUTER
 } from "../hardhat.config";
 
-const CONTRACT_NAME = "ThorchainSimpleAggregatorV5";
-const CONTRACT_ARGS = [WETH_ETH, UNISWAP_V2_ROUTER];
+const CONTRACT_NAME = "TSAggregatorWoofi";
+const CONTRACT_ARGS = [TTP_BASE, BASE_WETH, WOOFI_V2_ROUTER];
+
+// const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
+// const CONTRACT_ARGS: any[] = [];
 
 const deployerAddress = hre.network.name !== "hardhat" ? TS_DEPLOYER_ADDRESS : HARDHAT_DEPLOYER_ADDRESS;
 
@@ -35,7 +37,7 @@ async function main() {
     // verify contract
     if (hre.network.name !== "hardhat") {
         // wait a couple of blocks + time for indexing
-        await new Promise((resolve) => setTimeout(resolve, 30000));
+        await new Promise((resolve) => setTimeout(resolve, 15000));
         await hre.run("verify:verify", {
             address: contract.target,
             constructorArguments: CONTRACT_ARGS,
@@ -44,8 +46,8 @@ async function main() {
     }
 
     // optional: invoke methods
-    // await contract.setFee(15, FEE_RECIPIENT_ETH)
-    // console.log("Fee set");
+    await contract.setFee(15, FEE_RECIPIENT_ETH)
+    console.log("Fee set");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
