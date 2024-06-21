@@ -1,5 +1,6 @@
 ## Avalanche
 
+- TTP: [0x69ba883Af416fF5501D54D5e27A1f497fBD97156](https://snowtrace.io/address/0x69ba883Af416fF5501D54D5e27A1f497fBD97156)
 - Woofi V2: [0x8772B3a6c87dC23bf6Ab93c5f04E3F87da0e9606](https://snowtrace.io/address/0x8772B3a6c87dC23bf6Ab93c5f04E3F87da0e9606)
 
 ## Arbitrum One
@@ -11,6 +12,10 @@
 
 - TTP: [0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a](https://basescan.org/address/0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a)
 - Woofi V2: [0x30912B38618D3D37De3191A4FFE982C65a9aEC2E](https://arbiscan.io/address/0x30912B38618D3D37De3191A4FFE982C65a9aEC2E)
+
+## Ethereum
+- TTP: [0xF892Fef9dA200d9E84c9b0647ecFF0F34633aBe8](https://etherscan.io/address/0xf892fef9da200d9e84c9b0647ecff0f34633abe8)
+
 
 ## Optimism
 
