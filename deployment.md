@@ -12,7 +12,11 @@
 - TTP: [0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a](https://basescan.org/address/0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a)
 - Woofi V2: [0x30912B38618D3D37De3191A4FFE982C65a9aEC2E](https://arbiscan.io/address/0x30912B38618D3D37De3191A4FFE982C65a9aEC2E)
 
+## Optimism
 
+- TTP: [0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a](https://optimistic.etherscan.io/address/0x5505be604dfa8a1ad402a71f8a357fba47f9bf5a)
+- Woofi V2: [0x30912B38618D3D37De3191A4FFE982C65a9aEC2E](https://optimistic.etherscan.io/address/0x30912b38618d3d37de3191a4ffe982c65a9aec2e)
+  
 ## Polygon PoS
 
 - TTP [0x542f4FFb7EBBc194cCbFd72ea92199a7f77573d7](https://polygonscan.com/address/0x542f4FFb7EBBc194cCbFd72ea92199a7f77573d7)

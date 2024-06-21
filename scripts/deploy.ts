@@ -2,15 +2,15 @@ import hre, { ethers } from "hardhat";
 
 import {
     TS_DEPLOYER_ADDRESS,
-    POL_WMATIC,
-    POL_TTP,
     FEE_RECIPIENT_ETH,
     HARDHAT_DEPLOYER_ADDRESS,
-    WOOFI_V2_ROUTER
+    WOOFI_V2_ROUTER,
+    OP_TTP,
+    OP_WETH
 } from "../hardhat.config";
 
 const CONTRACT_NAME = "TSAggregatorWoofi";
-const CONTRACT_ARGS = [POL_TTP, POL_WMATIC, WOOFI_V2_ROUTER];
+const CONTRACT_ARGS = [OP_TTP, OP_WETH, WOOFI_V2_ROUTER];
 
 // const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
 // const CONTRACT_ARGS: any[] = [];

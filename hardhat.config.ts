@@ -11,6 +11,7 @@ export const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY || "";
 export const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY || "";
 export const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY || "";
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
+export const OPSCAN_API_KEY = process.env.OPSCAN_API_KEY || "";
 export const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY || "";
 
 export const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
@@ -25,12 +26,14 @@ export const AVAX_TTP = "0x69ba883Af416fF5501D54D5e27A1f497fBD97156";
 export const BASE_TTP = "0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a";
 export const BSC_TTP = "0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a";
 export const ETH_TTP = "0xF892Fef9dA200d9E84c9b0647ecFF0F34633aBe8";
+export const OP_TTP = "0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a";
 export const POL_TTP = "0x542f4FFb7EBBc194cCbFd72ea92199a7f77573d7";
 
 export const ARB_WETH = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
 export const AVAX_WAVAX = "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7";
 export const BASE_WETH = "0x4200000000000000000000000000000000000006";
 export const ETH_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+export const OP_WETH = "0x4200000000000000000000000000000000000006";
 export const POL_WMATIC = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270";
 
 export const ETH_UNISWAP_V2_ROUTER = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
@@ -71,17 +74,23 @@ export const POLYGON_CONFIG = {
   accounts: [TS_DEPLOYER_PK],
 };
 
+export const OP_CONFIG = {
+  url: "https://optimism.llamarpc.com",
+  chainId: 10,
+  accounts: [TS_DEPLOYER_PK],
+};
+
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   etherscan: {
-    apiKey: POLYGONSCAN_API_KEY,
+    apiKey: OPSCAN_API_KEY,
   },
   networks: {
     hardhat: {
       enableTransientStorage: true,
       gasPrice: 74e9
     },
-    mainnet: BASE_CONFIG,
+    mainnet: OP_CONFIG,
     matic: POLYGON_CONFIG,
   },
   gasReporter: {
