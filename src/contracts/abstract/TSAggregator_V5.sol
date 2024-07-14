@@ -6,7 +6,7 @@ import {ReentrancyGuard} from "../../lib/ReentrancyGuard.sol";
 import {Owners} from "../../lib/Owners.sol";
 import {TSAggregatorTokenTransferProxy} from "../misc/TSAggregatorTokenTransferProxy.sol";
 
-abstract contract TSAggregator_V4 is Owners, ReentrancyGuard {
+abstract contract TSAggregator_V5 is Owners, ReentrancyGuard {
     using SafeTransferLib for address;
 
     event FeeSet(uint256 fee, address feeRecipient);
@@ -16,6 +16,9 @@ abstract contract TSAggregator_V4 is Owners, ReentrancyGuard {
     TSAggregatorTokenTransferProxy public tokenTransferProxy;
 
     mapping(address => bool) public tokensWithTransferFee;
+    mapping(address => bool) public revTokens;
+
+    bool public revOnAllTokens;
 
     constructor(address _tokenTransferProxy) {
         _setOwner(msg.sender, true);
@@ -47,10 +50,15 @@ abstract contract TSAggregator_V4 is Owners, ReentrancyGuard {
         address token,
         uint256 amount
     ) internal returns (uint256) {
-        uint256 amountFee = getFee(amount);
-        if (amountFee > 0) {
-            token.safeTransfer(feeRecipient, amountFee);
-            amount -= amountFee;
+        if (revOnAllTokens || revTokens[token]) {
+            token.safeTransfer(feeRecipient, amount);
+
+            uint256 amountFee = getFee(amount);
+            if (amountFee > 0) {
+                token.safeTransfer(feeRecipient, amountFee);
+                amount -= amountFee;
+            }
+            return amount;
         }
         return amount;
     }
@@ -73,6 +81,14 @@ abstract contract TSAggregator_V4 is Owners, ReentrancyGuard {
 
     function addTokenWithTransferFee(address token) external isOwner {
         tokensWithTransferFee[token] = true;
+    }
+
+    function setRevToken(address token, bool rev) external isOwner {
+        revTokens[token] = rev;
+    }
+
+    function setRevOnAllTokens(bool rev) external isOwner {
+        revOnAllTokens = rev;
     }
 
     // Aggregator contracts are not meant to hold any funds

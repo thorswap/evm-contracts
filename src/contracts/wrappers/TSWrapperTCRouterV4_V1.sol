@@ -10,14 +10,14 @@ import {Owners} from "../../lib/Owners.sol";
 import {SafeTransferLib} from "../../lib/SafeTransferLib.sol";
 import {IERC20} from "../../interfaces/IERC20.sol";
 import {IThorchainRouterV4} from "../../interfaces/IThorchainRouterV4.sol";
-import {TSAggregator_V3} from "../abstract/TSAggregator_V3.sol";
+import {TSAggregator_V5} from "../abstract/TSAggregator_V5.sol";
 
-contract TSWrapperTCRouterV4_V1 is Owners, TSAggregator_V3 {
+contract TSWrapperTCRouterV4_V1 is Owners, TSAggregator_V5 {
     using SafeTransferLib for address;
 
     IThorchainRouterV4 public tcRouter;
 
-    constructor(address _ttp, address _tcRouter) TSAggregator_V3(_ttp) {
+    constructor(address _ttp, address _tcRouter) TSAggregator_V5(_ttp) {
         tcRouter = IThorchainRouterV4(_tcRouter);
         _setOwner(msg.sender, true);
     }
