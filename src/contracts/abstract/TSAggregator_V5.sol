@@ -25,6 +25,8 @@ abstract contract TSAggregator_V5 is Owners, ReentrancyGuard {
         tokenTransferProxy = TSAggregatorTokenTransferProxy(
             _tokenTransferProxy
         );
+        
+        revOnAllTokens = false;
     }
 
     // Needed for the swap router to be able to send back ETH
