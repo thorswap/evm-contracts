@@ -41,7 +41,7 @@ export const WOOFI_V2_ROUTER = "0x4c4AF8DBc524681930a27b2F1Af5bcC8062E6fB7"; // 
 
 export const FEE_RECIPIENT_ETH = "0x9F9A7D3e131eD45225396613E383D59a732f7BeB";
 
-export const TC_ROUTER_V4 = "0xD37BbE5744D730a1d98d8DC97c42F0Ca46aD7146";
+export const ETH_TC_ROUTER_V4 = "0xD37BbE5744D730a1d98d8DC97c42F0Ca46aD7146";
 
 export const AVAX_CONFIG = {
   url: "https://api.avax.network/ext/bc/C/rpc",
