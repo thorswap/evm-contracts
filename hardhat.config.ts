@@ -41,6 +41,8 @@ export const WOOFI_V2_ROUTER = "0x4c4AF8DBc524681930a27b2F1Af5bcC8062E6fB7"; // 
 
 export const FEE_RECIPIENT_ETH = "0x9F9A7D3e131eD45225396613E383D59a732f7BeB";
 
+export const AVAX_TC_ROUTER_V4 = "0x8F66c4AE756BEbC49Ec8B81966DD8bba9f127549";
+export const BSC_TC_ROUTER_V4 = "0xb30ec53f98ff5947ede720d32ac2da7e52a5f56b";
 export const ETH_TC_ROUTER_V4 = "0xD37BbE5744D730a1d98d8DC97c42F0Ca46aD7146";
 
 export const AVAX_CONFIG = {
@@ -59,6 +61,12 @@ export const ARB_CONFIG = {
 export const BASE_CONFIG = {
   url: "https://base.llamarpc.com",
   chainId: 8453,
+  accounts: [TS_DEPLOYER_PK],
+};
+
+export const BSC_CONFIG = {
+  url: "https://bsc-dataseed1.binance.org/",
+  chainId: 56,
   accounts: [TS_DEPLOYER_PK],
 };
 
@@ -83,14 +91,14 @@ export const OP_CONFIG = {
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
+    apiKey: BSCSCAN_API_KEY,
   },
   networks: {
     hardhat: {
       enableTransientStorage: true,
       gasPrice: 74e9
     },
-    mainnet: ETH_CONFIG,
+    mainnet: BSC_CONFIG,
     matic: POLYGON_CONFIG,
   },
   gasReporter: {

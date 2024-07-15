@@ -4,12 +4,12 @@ import {
     TS_DEPLOYER_ADDRESS,
     FEE_RECIPIENT_ETH,
     HARDHAT_DEPLOYER_ADDRESS,
-    ETH_TTP,
-    ETH_TC_ROUTER_V4
+    AVAX_TTP,
+    AVAX_TC_ROUTER_V4
 } from "../hardhat.config";
 
 const CONTRACT_NAME = "TSWrapperTCRouterV4_V1";
-const CONTRACT_ARGS = [ETH_TTP, ETH_TC_ROUTER_V4];
+const CONTRACT_ARGS = [AVAX_TTP, AVAX_TC_ROUTER_V4];
 
 // const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
 // const CONTRACT_ARGS: any[] = [];
@@ -46,7 +46,7 @@ async function main() {
 
     // optional: invoke methods
     await contract.setFee(15, FEE_RECIPIENT_ETH)
-    await contract.setRevToken
+    await contract.setRevOnAllTokens(false);
     console.log("Fee set");
 }
 
