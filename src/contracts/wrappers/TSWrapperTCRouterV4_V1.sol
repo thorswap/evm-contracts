@@ -22,7 +22,7 @@ contract TSWrapperTCRouterV4_V1 is Owners, TSAggregator_V5 {
         _setOwner(msg.sender, true);
     }
 
-    function wrapDeposit(
+    function depositWithExpiry(
         address payable vault,
         address asset,
         uint amount,
