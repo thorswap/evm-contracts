@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import {IERC20} from "../../interfaces/IERC20.sol";
 import {Owners} from "../../lib/Owners.sol";
 
-abstract contract PaymentGated is Owners {
+abstract contract TSPaymentGated is Owners {
     address public feeToken;
     uint256 public feeAmount; // fee amount per 30 day periods
 
