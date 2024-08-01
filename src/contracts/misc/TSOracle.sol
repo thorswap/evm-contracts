@@ -8,8 +8,9 @@ pragma solidity ^0.8.17;
 
 import {Owners} from "../../lib/Owners.sol";
 import {IThorchainRouterV4} from "../../interfaces/IThorchainRouterV4.sol";
+import {PaymentGated} from "../abstract/PaymentGated.sol";
 
-contract TSOracle_V1 is Owners {
+contract TSOracle_V1 is Owners, PaymentGated {
     struct VaultInformation {
         uint256 updatedAt;
         // 1 address for each supported chain. Chain as per Thornode.
@@ -25,7 +26,7 @@ contract TSOracle_V1 is Owners {
     event VaultsUpdated(string[] chains, uint256 timestamp);
     event ExpirationChanged(uint32 newExpiration);
 
-    constructor() {
+    constructor(address _feeAsset, uint256 price) PaymentGated(_feeAsset, price) {
         expiration = 259200; // 3 days
         _setOwner(msg.sender, true);
     }
