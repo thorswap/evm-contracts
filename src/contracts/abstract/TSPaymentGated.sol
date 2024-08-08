@@ -53,8 +53,8 @@ abstract contract TSPaymentGated is Owners {
         emit AccessGranted(user, accessExpiry);
     }
 
-    modifier isPaidUser(address user) {
-        require(paidUsers[user] >= block.timestamp, "Access not paid or expired");
+    modifier isPaidUser() {
+        require(paidUsers[msg.sender] >= block.timestamp, "Access not paid or expired");
         _;
     }
 
