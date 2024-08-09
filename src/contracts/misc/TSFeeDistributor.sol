@@ -20,6 +20,7 @@ contract TSFeeDistributor_V1 is Owners, Executors {
     IThorchainRouterV4 public tcRouter;
 
     IERC20 public feeAsset;
+    uint256 public minFeeAmount;
     uint256 private _communityDistribution;
 
     uint32 public treasuryBps;
@@ -45,6 +46,7 @@ contract TSFeeDistributor_V1 is Owners, Executors {
         oracle = IOracleV1(_oracleAddress);
         tcRouter = IThorchainRouterV4(_tcRouterAddress);
         feeAsset = IERC20(_feeAsset);
+        minFeeAmount = 0;
 
         _feeAsset.safeApprove(_tcRouterAddress, 0);
         _feeAsset.safeApprove(_tcRouterAddress, type(uint256).max);
@@ -53,6 +55,10 @@ contract TSFeeDistributor_V1 is Owners, Executors {
         treasuryWallet = _treasuryWallet;
 
         _setOwner(msg.sender, true);
+    }
+
+    function setMinFeeAmount(uint256 amount) external isOwner {
+        minFeeAmount = amount;
     }
 
     function setTCRouter(address _tcRouterAddress) public isOwner {
@@ -111,6 +117,7 @@ contract TSFeeDistributor_V1 is Owners, Executors {
     function _distributeTreasury(address inboundAddress) internal {
         require(_communityDistribution == 0, "It's the community's turn to receive distribution");
         uint256 balance = feeAsset.balanceOf(address(this));
+        require(balance >= minFeeAmount, "Balance is below minimum fee amount");
 
         uint256 treasuryAmount = balance * treasuryBps / 10000;
         _communityDistribution = balance - treasuryAmount;
