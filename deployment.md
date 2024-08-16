@@ -2,6 +2,10 @@
 
 - TTP: [0x69ba883Af416fF5501D54D5e27A1f497fBD97156](https://snowtrace.io/address/0x69ba883Af416fF5501D54D5e27A1f497fBD97156)
 - Woofi V2: [0x8772B3a6c87dC23bf6Ab93c5f04E3F87da0e9606](https://snowtrace.io/address/0x8772B3a6c87dC23bf6Ab93c5f04E3F87da0e9606)
+- TSOracle V1: [0x17e7e5016ac1D4527F211bEbf5b11FE36bda7D10](https://snowtrace.dev/address/0x17e7e5016ac1D4527F211bEbf5b11FE36bda7D10)
+- TSFeeDistributor V1: [0x55cF4D1E35221F0a7EF3F5D1ce5a07E3EcdB25B2](https://snowtrace.dev/address/0x55cF4D1E35221F0a7EF3F5D1ce5a07E3EcdB25B2)
+- TSThorchainWrapper V1: [0xCBD658862518eC05Fb99E8e993FdB502cD795BFC](https://snowtrace.io/address/0xCBD658862518eC05Fb99E8e993FdB502cD795BFC)
+
 
 ## Arbitrum One
 
@@ -9,14 +13,23 @@
 - Woofi V2: [0xcD6f8B17d19077f7f5a8Fa30C9b645B689626ceb](https://arbiscan.io/address/0xcD6f8B17d19077f7f5a8Fa30C9b645B689626ceb)
 - Generic V1: [0x6e5Add41C751e89432CdA5763156A3f41F1b17aC](https://arbiscan.io/address/0x6e5Add41C751e89432CdA5763156A3f41F1b17a)
 
+
 ## Base
 
 - TTP: [0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a](https://basescan.org/address/0x5505BE604dFA8A1ad402A71f8A357fba47F9bf5a)
 - Woofi V2: [0x30912B38618D3D37De3191A4FFE982C65a9aEC2E](https://arbiscan.io/address/0x30912B38618D3D37De3191A4FFE982C65a9aEC2E)
 - Generic V1: [0xb1970f2157a1B24D40f98b252F4F60b45c7AaeED](https://basescan.org/address/0xb1970f2157a1B24D40f98b252F4F60b45c7AaeED)
 
+
+## Binance Smart Chain
+
+- TSThorchainWrapper V1: [0x25Bdf9b9064f34Ad943677d510Ba5E2499F69E72](https://bscscan.com/address/0x25Bdf9b9064f34Ad943677d510Ba5E2499F69E72)
+
+
 ## Ethereum
+
 - TTP: [0xF892Fef9dA200d9E84c9b0647ecFF0F34633aBe8](https://etherscan.io/address/0xf892fef9da200d9e84c9b0647ecff0f34633abe8)
+- TSThorchainWrapper V1: [0xc4a1D21313FC0e78cF0A8cdCC46BDa5Ae9Fa0653](https://etherscan.io/address/0xc4a1D21313FC0e78cF0A8cdCC46BDa5Ae9Fa0653)
 
 
 ## Optimism
