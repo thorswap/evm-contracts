@@ -91,7 +91,7 @@ export const OP_CONFIG = {
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
+    apiKey: BASESCAN_API_KEY,
   },
   networks: {
     hardhat: {
@@ -99,6 +99,8 @@ const config: HardhatUserConfig = {
       gasPrice: 74e9
     },
     mainnet: ETH_CONFIG,
+    arbitrum: ARB_CONFIG,
+    base: BASE_CONFIG,
     matic: POLYGON_CONFIG,
   },
   gasReporter: {

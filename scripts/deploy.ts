@@ -4,14 +4,15 @@ import {
     TS_DEPLOYER_ADDRESS,
     FEE_RECIPIENT_ETH,
     HARDHAT_DEPLOYER_ADDRESS,
-    ETH_TTP,
-    ETH_TC_ROUTER_V4
+    ARB_TTP,
+    // ETH_TTP,
+    // ETH_TC_ROUTER_V4
     // BSC_TTP,
     // BSC_TC_ROUTER_V4
 } from "../hardhat.config";
 
-const CONTRACT_NAME = "TSWrapperTCRouterV4_V1";
-const CONTRACT_ARGS = [ETH_TTP, ETH_TC_ROUTER_V4];
+const CONTRACT_NAME = "TSAggregatorGeneric_V1";
+const CONTRACT_ARGS = [ARB_TTP];
 
 // const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
 // const CONTRACT_ARGS: any[] = [];
@@ -38,7 +39,7 @@ async function main() {
     // verify contract
     if (hre.network.name !== "hardhat") {
         // wait a couple of blocks + time for indexing
-        await new Promise((resolve) => setTimeout(resolve, 20000));
+        await new Promise((resolve) => setTimeout(resolve, 8000));
         await hre.run("verify:verify", {
             address: contract.target,
             constructorArguments: CONTRACT_ARGS,
@@ -48,7 +49,7 @@ async function main() {
 
     // optional: invoke methods
     await contract.setFee(15, FEE_RECIPIENT_ETH)
-    await contract.setRevOnAllTokens(false);
+    // await contract.setRevOnAllTokens(false);
     console.log("Fee set");
 }
 
