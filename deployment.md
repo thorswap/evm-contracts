@@ -14,9 +14,9 @@
 - Generic V1: [0x6e5Add41C751e89432CdA5763156A3f41F1b17aC](https://arbiscan.io/address/0x6e5Add41C751e89432CdA5763156A3f41F1b17a)
 - Uniswap V2: [0xE378FBDed20d6A21A61a7B84189265F4944fBb70](https://arbiscan.io/address/0xe378fbded20d6a21a61a7b84189265f4944fbb70)
 - Uniswap V3 100: [0x33d241aB15c2861347fB886Ff6C4A90aB99c463B](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
-- Uniswap V3 500: [](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
-- Uniswap V3 3000: [](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
-- Uniswap V3 10000: [](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
+- Uniswap V3 500: [0x4D32857A09df8D4ef610B9cDc9450E28b900fEC6](https://arbiscan.io/address/0x4D32857A09df8D4ef610B9cDc9450E28b900fEC6)
+- Uniswap V3 3000: [0x50Cbe1330100df9086F6fBc994a300b75dd78012](https://arbiscan.io/address/0x50Cbe1330100df9086F6fBc994a300b75dd78012)
+- Uniswap V3 10000: [0x2F661FE1441FE5dD9197660c9030FE71b9632E60](https://arbiscan.io/address/0x2F661FE1441FE5dD9197660c9030FE71b9632E60)
 
 
 ## Base
