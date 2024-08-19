@@ -2,17 +2,13 @@ import hre, { ethers } from "hardhat";
 
 import {
     TS_DEPLOYER_ADDRESS,
-    FEE_RECIPIENT_ETH,
     HARDHAT_DEPLOYER_ADDRESS,
-    ARB_TTP,
-    // ETH_TTP,
-    // ETH_TC_ROUTER_V4
-    // BSC_TTP,
-    // BSC_TC_ROUTER_V4
 } from "../hardhat.config";
 
-const CONTRACT_NAME = "TSAggregatorGeneric_V1";
-const CONTRACT_ARGS = [ARB_TTP];
+import { ARB_TTP, ARB_WETH, ARB_UNISWAP_V3_ROUTER, FEE_RECIPIENT_ETH } from "../addresses";
+
+const CONTRACT_NAME = "TSAggregatorUniswapV3_V1";
+const CONTRACT_ARGS = [ARB_TTP, ARB_WETH, ARB_UNISWAP_V3_ROUTER, 10000];
 
 // const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
 // const CONTRACT_ARGS: any[] = [];

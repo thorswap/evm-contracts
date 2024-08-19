@@ -12,6 +12,11 @@
 - TTP: [0x8bAF33E755Ee29E5E37F370a11A0a889DaC5d5f7](https://arbiscan.io/address/0x8bAF33E755Ee29E5E37F370a11A0a889DaC5d5f7)
 - Woofi V2: [0xcD6f8B17d19077f7f5a8Fa30C9b645B689626ceb](https://arbiscan.io/address/0xcD6f8B17d19077f7f5a8Fa30C9b645B689626ceb)
 - Generic V1: [0x6e5Add41C751e89432CdA5763156A3f41F1b17aC](https://arbiscan.io/address/0x6e5Add41C751e89432CdA5763156A3f41F1b17a)
+- Uniswap V2: [0xE378FBDed20d6A21A61a7B84189265F4944fBb70](https://arbiscan.io/address/0xe378fbded20d6a21a61a7b84189265f4944fbb70)
+- Uniswap V3 100: [0x33d241aB15c2861347fB886Ff6C4A90aB99c463B](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
+- Uniswap V3 500: [](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
+- Uniswap V3 3000: [](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
+- Uniswap V3 10000: [](https://arbiscan.io/address/0x33d241aB15c2861347fB886Ff6C4A90aB99c463B)
 
 
 ## Base

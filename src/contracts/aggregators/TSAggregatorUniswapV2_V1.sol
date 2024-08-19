@@ -7,7 +7,7 @@ import {IThorchainRouterV4} from "../../interfaces/IThorchainRouterV4.sol";
 import {IUniswapRouterV2} from "../../interfaces/IUniswapRouterV2extended.sol";
 import {TSAggregator_V2} from "../abstract/TSAggregator_V2.sol";
 
-contract TSAggregatorUniswapV2 is Owners, TSAggregator_V2 {
+contract TSAggregatorUniswapV2_V1 is Owners, TSAggregator_V2 {
     using SafeTransferLib for address;
 
     address public weth;
