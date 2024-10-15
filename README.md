@@ -15,6 +15,8 @@ Simply `npx hardhat test`
 ## Deploying
 Carefully set up `./scripts/deploy.ts` and run `npx hardhat run --network mainnet ./scripts/deploy.ts`.
 
-## Snowtrace verification
-Copy this config: https://snowtrace.io/documentation/recipes/hardhat-verification
-And run like `npx hardhat verify --network snowtrace CONTRACT_ADRESS "CONSTRUCTOR_ARGUMENT_1" "CONSTRUCTOR_ARGUMENT_2"`
+## Manual verification
+For Avax: copy this config: https://snowtrace.io/documentation/recipes/hardhat-verification
+
+And run
+`npx hardhat verify --network NETWORK_NAME CONTRACT_ADRESS "CONSTRUCTOR_ARGUMENT_1" "CONSTRUCTOR_ARGUMENT_2"`
