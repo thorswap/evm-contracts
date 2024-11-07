@@ -74,11 +74,11 @@ contract yTHOR is IERC4626, ERC20Vote, ReentrancyGuard {
         return convertToAssets(shares);
     }
 
-    function maxDeposit(address) public view returns (uint256) {
+    function maxDeposit(address) public pure returns (uint256) {
         return type(uint256).max;
     }
 
-    function maxMint(address) external view returns (uint256) {
+    function maxMint(address) external pure returns (uint256) {
         return type(uint256).max;
     }
 
@@ -106,11 +106,7 @@ contract yTHOR is IERC4626, ERC20Vote, ReentrancyGuard {
         uint256 shares,
         address receiver
     ) public nonReentrant returns (uint256 assets) {
-        assets = previewMint(shares);
-        address(_asset).safeTransferFrom(msg.sender, address(this), assets);
-        _mint(receiver, shares);
-
-        emit Deposit(msg.sender, receiver, assets, shares);
+        revert("NOT_SUPPORTED");
     }
 
     function withdraw(
@@ -118,19 +114,7 @@ contract yTHOR is IERC4626, ERC20Vote, ReentrancyGuard {
         address receiver,
         address owner
     ) public nonReentrant returns (uint256 shares) {
-        shares = convertToShares(assets);
-        require(balanceOf[owner] >= shares, "INSUFFICIENT_BALANCE");
-
-        if (msg.sender != owner) {
-            uint256 allowed = allowance[owner][msg.sender];
-            if (allowed != type(uint256).max)
-                allowance[owner][msg.sender] = allowed - shares;
-        }
-
-        _burn(owner, shares);
-
-        emit Withdraw(msg.sender, receiver, owner, assets, shares);
-        address(_asset).safeTransfer(receiver, assets);
+        revert("NOT_SUPPORTED");
     }
 
     function redeem(
@@ -138,29 +122,17 @@ contract yTHOR is IERC4626, ERC20Vote, ReentrancyGuard {
         address receiver,
         address owner
     ) public nonReentrant returns (uint256 assets) {
-        assets = convertToAssets(shares);
-        require(balanceOf[owner] >= shares, "INSUFFICIENT_BALANCE");
-
-        if (msg.sender != owner) {
-            uint256 allowed = allowance[owner][msg.sender];
-            if (allowed != type(uint256).max)
-                allowance[owner][msg.sender] = allowed - shares;
-        }
-
-        _burn(owner, shares);
-
-        emit Withdraw(msg.sender, receiver, owner, assets, shares);
-        address(_asset).safeTransfer(receiver, assets);
+        revert("NOT_SUPPORTED");
     }
 
-    function claimRewards() public nonReentrant {
-        uint256 userRewards = accruedRewards[msg.sender];
+    function claimRewards(address user) public nonReentrant {
+        uint256 userRewards = accruedRewards[user];
         require(userRewards > 0, "NO_REWARDS");
 
-        accruedRewards[msg.sender] = 0;
-        address(_rewardAsset).safeTransfer(msg.sender, userRewards);
+        accruedRewards[user] = 0;
+        address(_rewardAsset).safeTransfer(user, userRewards);
 
-        emit RewardClaimed(msg.sender, userRewards);
+        emit RewardClaimed(user, userRewards);
     }
 
     function depositRewards(uint256 rewardAssetAmount) external nonReentrant {
