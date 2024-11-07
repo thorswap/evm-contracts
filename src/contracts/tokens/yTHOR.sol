@@ -125,6 +125,7 @@ contract yTHOR is IERC4626, ERC20Vote, ReentrancyGuard {
         revert("NOT_SUPPORTED");
     }
 
+    // allow operational wallet to claim rewards on behalf of users
     function claimRewards(address user) public nonReentrant {
         uint256 userRewards = accruedRewards[user];
         require(userRewards > 0, "NO_REWARDS");
