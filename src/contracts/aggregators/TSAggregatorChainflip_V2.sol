@@ -41,7 +41,18 @@ contract TSAggregatorChainflip_V2 is Owners, TSAggregator_V6 {
 
     constructor(address _ttp) TSAggregator_V6(_ttp) {
         _setOwner(msg.sender, true);
-        setCfVault(address(0xF5e10380213880111522dd0efD3dbb45b9f62Bcc));
+
+        addRouter(0xD37BbE5744D730a1d98d8DC97c42F0Ca46aD7146); // thorchain router eth
+        addRouter(0xe3985E6b61b814F7Cdb188766562ba71b446B46d); // mayachain router eth
+        setCfVault(0xF5e10380213880111522dd0efD3dbb45b9f62Bcc); // chainflip router eth
+
+        // initial cfAssets mapping
+        addCfAsset(0xa5f2211B9b8170F694421f2046281775E8468044, 5, 9); // ETH.THOR -> SOL.SOL
+        addCfAsset(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48, 5, 10); // ETH.USDC -> SOL.USDC
+        addCfAsset(0x6B175474E89094C44Da98b954EedeAC495271d0F, 4, 6); // ETH.DAT -> ARB.ETH
+        addCfAsset(0xdAC17F958D2ee523a2206206994597C13D831ec7, 4, 7); // ETH.USDT -> ARB.USDC
+        addCfAsset(0x826180541412D574cf1336d22c0C0a287822678A, 1, 2); // ETH.FLIP -> ETH.FLIP
+        addCfAsset(0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984, 2, 4); // ETH.UNI -> DOT.DOT
     }
 
     function addRouter(address _routerAddress) public isOwner {
