@@ -48,9 +48,7 @@ contract TSAggregatorChainflip_V2 is Owners, TSAggregator_V6 {
         routers.push(IThorchainRouterV4(_routerAddress));
     }
 
-    function getRouterAddress(
-        uint16 index
-    ) public view returns (address) {
+    function getRouterAddress(uint16 index) public view returns (address) {
         require(index < routers.length, "Invalid router index");
         return address(routers[index]);
     }
@@ -59,18 +57,15 @@ contract TSAggregatorChainflip_V2 is Owners, TSAggregator_V6 {
         chainflipVault = IChainflipVault(_vault);
     }
 
-    function addCfAsset(address _token, uint32 _dstChain, uint32 _dstToken)
-        public
-        isOwner
-    {
+    function addCfAsset(
+        address _token,
+        uint32 _dstChain,
+        uint32 _dstToken
+    ) public isOwner {
         cfAssets[_token] = cfAsset(_dstChain, _dstToken);
     }
 
-    function getCfAsset(address _token)
-        public
-        view
-        returns (uint32, uint32)
-    {
+    function getCfAsset(address _token) public view returns (uint32, uint32) {
         return (cfAssets[_token].dstChain, cfAssets[_token].dstToken);
     }
 
@@ -81,10 +76,23 @@ contract TSAggregatorChainflip_V2 is Owners, TSAggregator_V6 {
         address token, // Address of the token transferred to the receiver. A value of0xEeee...eeEEeE represents the native token.
         uint256 amount // Amount of the destination token transferred to the receiver. If it's the native token, the amount value will equal the msg.value.
     ) public payable nonReentrant {
-        (uint _routerIndex, address _vault, string memory _memo) = abi.decode(
-            message,
-            (uint, address, string)
-        );
+        uint _routerIndex;
+        address _vault;
+        string memory _memo;
+
+        // decode the message and validate format
+        try this.decodeMessage(message) returns (
+            uint decodedRouterIndex,
+            address decodedVault,
+            string memory decodedMemo
+        ) {
+            _routerIndex = decodedRouterIndex;
+            _vault = decodedVault;
+            _memo = decodedMemo;
+        } catch {
+            revert("Invalid message format");
+        }
+
         require(_routerIndex < routers.length, "Invalid router index");
 
         if (msg.value > 0) {
@@ -94,7 +102,7 @@ contract TSAggregatorChainflip_V2 is Owners, TSAggregator_V6 {
                 address(0),
                 _safeAmount,
                 _memo,
-                block.timestamp + 1
+                type(uint).max
             );
         } else {
             uint256 _safeAmount = takeFeeToken(token, amount);
@@ -106,7 +114,7 @@ contract TSAggregatorChainflip_V2 is Owners, TSAggregator_V6 {
                 token,
                 _safeAmount,
                 _memo,
-                block.timestamp + 1
+                type(uint).max
             );
         }
 
@@ -128,22 +136,37 @@ contract TSAggregatorChainflip_V2 is Owners, TSAggregator_V6 {
     ) public payable nonReentrant {
         // check if token matches an entry in cfAssets
         (uint32 _dstChain, uint32 _dstToken) = getCfAsset(token);
+        uint256 _safeAmount = takeFeeGas(msg.value);
 
         if (_dstChain == 0 && _dstToken == 0) {
             // if token did not match an entry, send eth to recipient "to"
-            uint256 _safeAmount = takeFeeGas(msg.value);
             to.safeTransferETH(_safeAmount);
             emit SwapOut(to, token, _safeAmount, amountOutMin);
         } else {
             // call xSwapNative on chainflipVault
-            uint256 _safeAmount = takeFeeGas(msg.value);
-            chainflipVault.xSwapNative{value: _safeAmount}(
-                _dstChain,
-                abi.encode(to),
-                _dstToken,
-                ""
-            );
-            emit SwapOut(to, token, msg.value, amountOutMin);
+            try
+                chainflipVault.xSwapNative{value: _safeAmount}(
+                    _dstChain,
+                    abi.encode(to),
+                    _dstToken,
+                    ""
+                )
+            {
+                emit SwapOut(to, token, msg.value, amountOutMin);
+            } catch {
+                to.safeTransferETH(_safeAmount);
+            }
         }
+    }
+
+    // helper function to decode the message
+    function decodeMessage(
+        bytes calldata message
+    )
+        public
+        pure
+        returns (uint routerIndex, address vault, string memory memo)
+    {
+        return abi.decode(message, (uint, address, string));
     }
 }
