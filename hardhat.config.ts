@@ -80,7 +80,7 @@ const config: HardhatUserConfig = {
     matic: POLYGON_CONFIG,
   },
   gasReporter: {
-    enabled: true,
+    enabled: false,
     currency: "USD",
     noColors: false,
     token: "ETH",
