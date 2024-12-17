@@ -42,12 +42,12 @@ contract TSAggregatorChainflip_V3 is Owners, TSAggregator_V6 {
     mapping(uint32 => address) public cfAssetsIndex;
     uint32 public cfAssetsLength;
 
-    constructor(address _ttp) TSAggregator_V6(_ttp) {
+    constructor(address _ttp, address _cfRouter) TSAggregator_V6(_ttp) {
         _setOwner(msg.sender, true);
 
         addRouter(0xD37BbE5744D730a1d98d8DC97c42F0Ca46aD7146); // thorchain router eth
         addRouter(0xe3985E6b61b814F7Cdb188766562ba71b446B46d); // mayachain router eth
-        setCfVault(0xF5e10380213880111522dd0efD3dbb45b9f62Bcc); // chainflip router eth
+        setCfVault(_cfRouter); // chainflip router
 
         // initial cfAssets mapping
         addCfAsset(0xa5f2211B9b8170F694421f2046281775E8468044, 5, 9, false); // ETH.THOR -> SOL.SOL

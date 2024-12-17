@@ -5,10 +5,10 @@ import {
     HARDHAT_DEPLOYER_ADDRESS,
 } from "../hardhat.config";
 
-import { ETH_TTP, FEE_RECIPIENT_ETH } from "../addresses";
+import { ETH_TTP, ETH_CF_ROUTER, FEE_RECIPIENT_ETH } from "../addresses";
 
-const CONTRACT_NAME = "TSAggregatorChainflip_V2";
-const CONTRACT_ARGS = [ETH_TTP];
+const CONTRACT_NAME = "TSAggregatorChainflip_V3";
+const CONTRACT_ARGS = [ETH_TTP, ETH_CF_ROUTER];
 
 // const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
 // const CONTRACT_ARGS: any[] = [];
