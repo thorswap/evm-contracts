@@ -35,7 +35,7 @@
 
 - TTP: [0xF892Fef9dA200d9E84c9b0647ecFF0F34633aBe8](https://etherscan.io/address/0xf892fef9da200d9e84c9b0647ecff0f34633abe8)
 - TSThorchainWrapper V1: [0xc4a1D21313FC0e78cF0A8cdCC46BDa5Ae9Fa0653](https://etherscan.io/address/0xc4a1D21313FC0e78cF0A8cdCC46BDa5Ae9Fa0653)
-- CFAggregator V3 [0x1047156A1A152672E287E7dfc9487c3566Bfd1F5](https://etherscan.io/address/0x1047156A1A152672E287E7dfc9487c3566Bfd1F5)
+- CFAggregator V1 [0x029c7a9098d6Efa723df308d3278211CD68b05Ed](https://etherscan.io/address/0x029c7a9098d6Efa723df308d3278211CD68b05Ed)
 
 
 ## Optimism
