@@ -9,7 +9,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.
 contract yieldTHOR is ERC20, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    uint256 private constant ACC_PRECISION = 1e12;
+    uint256 private constant ACC_PRECISION = 1e24;
     IERC20 public immutable asset;
     IERC20 public immutable reward;
     uint256 public accRewardPerShare;
