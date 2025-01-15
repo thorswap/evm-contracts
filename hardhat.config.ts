@@ -48,8 +48,8 @@ export const BSC_CONFIG = {
 };
 
 export const ETH_CONFIG = {
-  //url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
-  url: "https://eth.llamarpc.com",
+  url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
+  // url: "https://eth.llamarpc.com",
   chainId: 1,
   accounts: [TS_DEPLOYER_PK],
 };
@@ -74,7 +74,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       enableTransientStorage: true,
-      gasPrice: 74e9,
+      gasPrice: 10e9,
     },
     mainnet: ETH_CONFIG,
     arbitrum: ARB_CONFIG,
