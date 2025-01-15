@@ -144,43 +144,29 @@ contract yieldTHOR is ERC20, ReentrancyGuard {
     function depositRewards(uint256 amount) external nonReentrant {
         require(totalSupply() > 0, "NO_SHARES");
         reward.safeTransferFrom(msg.sender, address(this), amount);
-        accRewardPerShare =
-            accRewardPerShare +
-            ((amount * ACC_PRECISION) / totalSupply());
+        accRewardPerShare = accRewardPerShare + ((amount * ACC_PRECISION) / totalSupply());
         emit RewardsDeposited(amount);
     }
 
     function claimable(address user) external view returns (uint256) {
-        int256 accumulated = int256(
-            (balanceOf(user) * accRewardPerShare) / ACC_PRECISION
-        );
+        int256 accumulated = int256((balanceOf(user) * accRewardPerShare) / ACC_PRECISION);
         return uint256(accumulated - rewardDebt[user]);
     }
 
     function claimRewards() external nonReentrant {
-        int256 accumulated = int256(
-            (balanceOf(msg.sender) * accRewardPerShare) / ACC_PRECISION
-        );
+        int256 accumulated = int256((balanceOf(msg.sender) * accRewardPerShare) / ACC_PRECISION);
         uint256 pending = uint256(accumulated - rewardDebt[msg.sender]);
         rewardDebt[msg.sender] = accumulated;
         reward.safeTransfer(msg.sender, pending);
         emit RewardClaimed(msg.sender, pending);
     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal override {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
         if (from != address(0)) {
-            rewardDebt[from] =
-                rewardDebt[from] -
-                int256((amount * accRewardPerShare) / ACC_PRECISION);
+            rewardDebt[from] = rewardDebt[from] - int256((amount * accRewardPerShare) / ACC_PRECISION);
         }
         if (to != address(0)) {
-            rewardDebt[to] =
-                rewardDebt[to] +
-                int256((amount * accRewardPerShare) / ACC_PRECISION);
+            rewardDebt[to] = rewardDebt[to] + int256((amount * accRewardPerShare) / ACC_PRECISION);
         }
     }
 }

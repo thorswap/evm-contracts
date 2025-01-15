@@ -2,7 +2,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "tsconfig-paths/register";
 
-require('dotenv').config();
+require("dotenv").config();
 
 export const TS_DEPLOYER_PK = process.env.TS_DEPLOYER_PRIVATE_KEY || "";
 export const TS_DEPLOYER_ADDRESS = process.env.TS_DEPLOYER_PUBLIC_ADDRESS || "";
@@ -18,7 +18,8 @@ export const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
 export const CMC_API_KEY = process.env.CMC_API_KEY || "";
 
 // helpers
-export const HARDHAT_DEPLOYER_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+export const HARDHAT_DEPLOYER_ADDRESS =
+  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 export const E_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const AVAX_CONFIG = {
@@ -47,7 +48,8 @@ export const BSC_CONFIG = {
 };
 
 export const ETH_CONFIG = {
-  url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
+  //url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
+  url: "https://eth.llamarpc.com",
   chainId: 1,
   accounts: [TS_DEPLOYER_PK],
 };
@@ -72,7 +74,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       enableTransientStorage: true,
-      gasPrice: 74e9
+      gasPrice: 74e9,
     },
     mainnet: ETH_CONFIG,
     arbitrum: ARB_CONFIG,
@@ -87,54 +89,59 @@ const config: HardhatUserConfig = {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   solidity: {
-    compilers: [{
-      version: "0.8.4",
-      settings: {
-        metadata: {
-          bytecodeHash: "none",
-        },
-        optimizer: {
-          enabled: true,
-          runs: 800,
-        },
-      },
-    }, {
-      version: "0.8.10",
-      settings: {
-        optimizer: {
-          enabled: true,
-          runs: 1000,
+    compilers: [
+      {
+        version: "0.8.4",
+        settings: {
+          metadata: {
+            bytecodeHash: "none",
+          },
+          optimizer: {
+            enabled: true,
+            runs: 800,
+          },
         },
       },
-    }, {
-      version: "0.8.17",
-      settings: {
-        viaIR: true,
-        optimizer: {
-          enabled: true,
-          runs: 200,
-          // details: {
-          //   yulDetails: {
-          //     optimizerSteps: "u",
-          //   },
-          // },
+      {
+        version: "0.8.10",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
         },
       },
-    }, {
-      version: "0.8.22",
-      settings: {
-        viaIR: true,
-        optimizer: {
-          enabled: true,
-          runs: 200,
-          // details: {
-          //   yulDetails: {
-          //     optimizerSteps: "u",
-          //   },
-          // },
+      {
+        version: "0.8.17",
+        settings: {
+          viaIR: true,
+          optimizer: {
+            enabled: true,
+            runs: 200,
+            // details: {
+            //   yulDetails: {
+            //     optimizerSteps: "u",
+            //   },
+            // },
+          },
         },
       },
-    }]
+      {
+        version: "0.8.22",
+        settings: {
+          viaIR: true,
+          optimizer: {
+            enabled: true,
+            runs: 200,
+            // details: {
+            //   yulDetails: {
+            //     optimizerSteps: "u",
+            //   },
+            // },
+          },
+        },
+      },
+    ],
   },
   paths: {
     artifacts: "./artifacts",
