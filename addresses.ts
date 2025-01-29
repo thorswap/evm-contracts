@@ -21,6 +21,7 @@ export const ETH_UNISWAP_V2_ROUTER = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
 
 // Uniswap V3
 export const ARB_UNISWAP_V3_ROUTER = "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45";
+export const BASE_UNISWAP_V3_ROUTER = "0x2626664c2603336e57b271c5c0b26f421741e481";
 
 // Other providers
 export const WOOFI_V2_ROUTER = "0x4c4AF8DBc524681930a27b2F1Af5bcC8062E6fB7"; // verified on arb, avax, base, bsc, eth, op, pol

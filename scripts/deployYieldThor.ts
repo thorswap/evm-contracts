@@ -12,7 +12,7 @@ async function main() {
 
   if (!deployer) {
     throw new Error("Deployer not found");
-}
+  }
 
   // deploy contract
   const CONTRACT_NAME = "yTHOR";
