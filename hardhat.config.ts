@@ -69,7 +69,7 @@ export const OP_CONFIG = {
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   etherscan: {
-    apiKey: BASESCAN_API_KEY,
+    apiKey: ETHERSCAN_API_KEY,
   },
   networks: {
     hardhat: {

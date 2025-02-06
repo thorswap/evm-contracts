@@ -5,10 +5,10 @@ import {
     HARDHAT_DEPLOYER_ADDRESS,
 } from "../hardhat.config";
 
-import { BASE_TTP, BASE_WETH, BASE_UNISWAP_V3_ROUTER, FEE_RECIPIENT_ETH } from "../addresses";
+import { ETH_WETH } from "../addresses";
 
-const CONTRACT_NAME = "TSAggregatorUniswapV3_V2";
-const CONTRACT_ARGS = [BASE_TTP, BASE_WETH, BASE_UNISWAP_V3_ROUTER, 10000];
+const CONTRACT_NAME = "TSSushiPoolDonator_V1";
+const CONTRACT_ARGS = [ETH_WETH, "0x3d3f13f2529ec3c84b2940155effbf9b39a8f3ec"];
 
 // const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
 // const CONTRACT_ARGS: any[] = [];
@@ -44,9 +44,9 @@ async function main() {
     }
 
     // optional: invoke methods
-    await contract.setFee(20, FEE_RECIPIENT_ETH)
-    await contract.setRevOnAllTokens(true);
-    console.log("Fee set");
+    // await contract.setFee(20, FEE_RECIPIENT_ETH)
+    // await contract.setRevOnAllTokens(true);
+    // console.log("Fee set");
     
     // await contract.setMemoTreasury(0, "=:ETH.USDC-B48:0x7D8911eB1C72F0Ba29302bE30301B75Cec81F622:0/1/0:t:0")
     // await contract.setMemoCommunity(0, "=:ETH.THOR-044:0x815C23eCA83261b6Ec689b60Cc4a58b54BC24D8D:0/1/0:t:0")
