@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {Owners} from "../../lib/Owners.sol";
-import {SafeTransferLib} from "../../lib/SafeTransferLib.sol";
-import {IThorchainRouterV4} from "../../interfaces/IThorchainRouterV4.sol";
-import {IChainflipVault} from "../../interfaces/IChainflipVault.sol";
-import {TSAggregator_V5} from "../abstract/TSAggregator_V5.sol";
+import {Owners} from "../../../lib/Owners.sol";
+import {SafeTransferLib} from "../../../lib/SafeTransferLib.sol";
+import {IThorchainRouterV4} from "../../../interfaces/IThorchainRouterV4.sol";
+import {IChainflipVault} from "../../../interfaces/IChainflipVault.sol";
+import {TSAggregator_V5} from "../../abstract/TSAggregator_V5.sol";
 
 contract TSAggregatorChainflip_V1 is Owners, TSAggregator_V5 {
     using SafeTransferLib for address;
