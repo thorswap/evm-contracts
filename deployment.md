@@ -40,6 +40,7 @@
 - TSThorchainWrapper V1: [0xc4a1D21313FC0e78cF0A8cdCC46BDa5Ae9Fa0653](https://etherscan.io/address/0xc4a1D21313FC0e78cF0A8cdCC46BDa5Ae9Fa0653)
 - CFAggregator V1 [0x029c7a9098d6Efa723df308d3278211CD68b05Ed](https://etherscan.io/address/0x029c7a9098d6Efa723df308d3278211CD68b05Ed)
 - TSSushiPoolDonator V1 [0x699D70B24c3818Aac83Cb2C5BacFA93448Db61E4](https://etherscan.io/address/0x699D70B24c3818Aac83Cb2C5BacFA93448Db61E4)
+- TSFeeDistributor V3 [0xfb6820693BF8b8Cd75A358978f268E57BBb87B6A](https://etherscan.io/address/0xfb6820693BF8b8Cd75A358978f268E57BBb87B6A)
 
 
 ## Optimism

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-
 import {Owners} from "../../lib/Owners.sol";
 import {Executors} from "../../lib/Executors.sol";
 import {SafeTransferLib} from "../../lib/SafeTransferLib.sol";
@@ -30,15 +29,10 @@ contract TSFeeDistributor_V3 is Owners, Executors {
     // ------------------------------------------------------
     // Config
     // ------------------------------------------------------
-    address public tcRouterAddress;
-    uint256 public rewardAmountThreshold;
-
-    // ------------------------------------------------------
-    // BPS Config
-    // ------------------------------------------------------
     // "treasuryBps + communityBps = 10000" (100%).
     uint16 public treasuryBps; // e.g. 2500 = 25%
     uint16 public communityBps; // e.g. 7500 = 75%
+    uint256 public rewardAmountThreshold;
 
     // Within the community portion, split among uThor, yThor, vThor, thorPool.
     // Example: If communityBps = 7500, and uThorBps=1000, yThorBps=3000, vThorBps=2000, thorPoolBps=1500,
@@ -49,17 +43,15 @@ contract TSFeeDistributor_V3 is Owners, Executors {
     uint16 public thorPoolBps;
 
     // ------------------------------------------------------
-    // Memos
-    // ------------------------------------------------------
-    // In a single function approach, you only need one community memo index (or direct string).
-    // But you can still keep them if you want to handle multiple memos.
-    uint16 public communityIndex;
-    mapping(uint32 => string) public memoCommunity;
-
-    // ------------------------------------------------------
     // Events
     // ------------------------------------------------------
-    event Distribution(uint256 amount, uint256 vThorBps, uint256 poolBps);
+    event Distribution(
+        uint256 amount,
+        uint16 poolBps,
+        uint16 uThorBps,
+        uint16 vThorBps,
+        uint16 yThorBps
+    );
 
     // ------------------------------------------------------
     // Constructor
@@ -74,7 +66,6 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         address _yThorToken
     ) {
         // Initialize external references
-        tcRouterAddress = _tcRouterAddress;
         tcRouter = IThorchainRouterV4(_tcRouterAddress);
         feeAsset = IERC20(_feeAsset);
         thorToken = IERC20(_thorToken);
@@ -110,7 +101,6 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         tcRouter = IThorchainRouterV4(_tcRouterAddress);
         feeAsset.approve(_tcRouterAddress, 0);
         feeAsset.approve(_tcRouterAddress, type(uint256).max);
-        tcRouterAddress = _tcRouterAddress;
     }
 
     /**
@@ -128,17 +118,6 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         communityBps = _communityBps;
     }
 
-    function setMemoCommunity(
-        uint32 id,
-        string calldata memo
-    ) external isOwner {
-        memoCommunity[id] = memo;
-    }
-
-    function setCommunityIndex(uint16 index) external isOwner {
-        communityIndex = index;
-    }
-
     function setTreasuryWallet(address _treasuryWallet) external isOwner {
         require(_treasuryWallet != address(0), "Invalid treasury wallet");
         treasuryWallet = _treasuryWallet;
@@ -150,7 +129,7 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         uint256 uBal = thorToken.balanceOf(address(uThorToken));
         uint256 vBal = thorToken.balanceOf(address(vThorToken));
         uint256 yBal = thorToken.balanceOf(address(yThorToken));
-        uint256 pBal = thorToken.balanceOf(tcRouterAddress);
+        uint256 pBal = thorToken.balanceOf(address(tcRouter));
 
         uint256 total = uBal + yBal + vBal + pBal;
         require(total > 0, "No THOR tokens in any recipient contract");
@@ -177,10 +156,10 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         feeAsset.transfer(treasuryWallet, treasuryAmount);
 
         // 4. Split the community amount into sub-allocations
-        uint256 uPortion = (communityAmount * uThorBps) / communityBps;
-        uint256 yPortion = (communityAmount * yThorBps) / communityBps;
-        uint256 vPortion = (communityAmount * vThorBps) / communityBps;
-        uint256 pPortion = (communityAmount * thorPoolBps) / communityBps;
+        uint256 uPortion = (communityAmount * uThorBps) / 10000;
+        uint256 yPortion = (communityAmount * yThorBps) / 10000;
+        uint256 vPortion = (communityAmount * vThorBps) / 10000;
+        uint256 pPortion = (communityAmount * thorPoolBps) / 10000;
         uint256 swapBackToRunePortion = vPortion + pPortion; // single chunk for Thorchain
 
         // 5. Send USDC to uThor & yThor via depositRewards()
@@ -192,11 +171,11 @@ contract TSFeeDistributor_V3 is Owners, Executors {
             payable(inboundAddress),
             address(feeAsset),
             swapBackToRunePortion,
-            memoCommunity[communityIndex],
+            "=:r:t:0/1/0:t:0",
             type(uint256).max
         );
 
         // 7. Emit a single event summarizing the distribution
-        emit Distribution(balance, vThorBps, thorPoolBps);
+        emit Distribution(balance, thorPoolBps, uThorBps, vThorBps, yThorBps);
     }
 }
