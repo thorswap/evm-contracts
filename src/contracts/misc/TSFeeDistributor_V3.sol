@@ -30,27 +30,27 @@ contract TSFeeDistributor_V3 is Owners, Executors {
     // Config
     // ------------------------------------------------------
     // "treasuryBps + communityBps = 10000" (100%).
-    uint16 public treasuryBps; // e.g. 2500 = 25%
-    uint16 public communityBps; // e.g. 7500 = 75%
+    uint32 public treasuryPreciseBps; // e.g. 2500bps = 2_500_000[1000bps] = 25%
+    uint32 public communityPreciseBps; // e.g. 7500bps = 7_500_000[1000bps] = 75%
     uint256 public rewardAmountThreshold;
 
     // Within the community portion, split among uThor, yThor, vThor, thorPool.
     // Example: If communityBps = 7500, and uThorBps=1000, yThorBps=3000, vThorBps=2000, thorPoolBps=1500,
     // that totals 7500.
-    uint16 public uThorBps;
-    uint16 public yThorBps;
-    uint16 public vThorBps;
-    uint16 public thorPoolBps;
+    uint32 public uThorPreciseBps;
+    uint32 public yThorPreciseBps;
+    uint32 public vThorPreciseBps;
+    uint32 public thorPoolPreciseBps;
 
     // ------------------------------------------------------
     // Events
     // ------------------------------------------------------
     event Distribution(
         uint256 amount,
-        uint16 poolBps,
-        uint16 uThorBps,
-        uint16 vThorBps,
-        uint16 yThorBps
+        uint32 poolBps,
+        uint32 uThorBps,
+        uint32 vThorBps,
+        uint32 yThorBps
     );
 
     // ------------------------------------------------------
@@ -74,8 +74,8 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         yThorToken = IERC20(_yThorToken);
 
         // Default BPS (25% treasury / 75% community)
-        treasuryBps = 2500;
-        communityBps = 7500;
+        treasuryPreciseBps = 2_500_000;
+        communityPreciseBps = 7_500_000;
 
         // Approve Thorchain router to spend feeAsset
         feeAsset.approve(_tcRouterAddress, type(uint256).max);
@@ -83,7 +83,7 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         feeAsset.approve(_yThorToken, type(uint256).max);
 
         // Basic config
-        rewardAmountThreshold = 30_000_000_000; // 30k usdc
+        rewardAmountThreshold = 20_000_000_000; // 20k usdc
         treasuryWallet = _treasuryWallet;
 
         // Setup owners/executors
@@ -104,18 +104,18 @@ contract TSFeeDistributor_V3 is Owners, Executors {
     }
 
     /**
-     * @notice Set the top-level treasury/community BPS split. Must total 10000.
+     * @notice Set the top-level treasury/community BPS split. Must total 10_000_000
      */
     function setShares(
-        uint16 _treasuryBps,
-        uint16 _communityBps
+        uint32 _treasuryPreciseBps,
+        uint32 _communityPreciseBps
     ) external isOwner {
         require(
-            _treasuryBps + _communityBps == 10000,
-            "Shares must add up to 10000"
+            _treasuryPreciseBps + _communityPreciseBps == 10_000_000,
+            "Shares must add up to 10_000_000"
         );
-        treasuryBps = _treasuryBps;
-        communityBps = _communityBps;
+        treasuryPreciseBps = _treasuryPreciseBps;
+        communityPreciseBps = _communityPreciseBps;
     }
 
     function setTreasuryWallet(address _treasuryWallet) external isOwner {
@@ -131,36 +131,41 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         uint256 yBal = thorToken.balanceOf(address(yThorToken));
         uint256 pBal = thorToken.balanceOf(address(tcRouter));
 
-        uint256 total = uBal + yBal + vBal + pBal;
-        require(total > 0, "No THOR tokens in any recipient contract");
+        uint256 totalBalAssetAmount = (uBal + yBal + vBal + pBal);
 
-        uThorBps = uint16((uBal * communityBps) / total);
-        yThorBps = uint16((yBal * communityBps) / total);
-        vThorBps = uint16((vBal * communityBps) / total);
-        thorPoolBps = communityBps - (uThorBps + yThorBps + vThorBps);
-        require(thorPoolBps > 0, "ThorPool BPS must be > 0");
+        uThorPreciseBps = uint32(
+            ((uBal * communityPreciseBps) / totalBalAssetAmount)
+        );
+        yThorPreciseBps = uint32(
+            ((yBal * communityPreciseBps) / totalBalAssetAmount)
+        );
+        vThorPreciseBps = uint32(
+            ((vBal * communityPreciseBps) / totalBalAssetAmount)
+        );
+        thorPoolPreciseBps =
+            communityPreciseBps -
+            (uThorPreciseBps + yThorPreciseBps + vThorPreciseBps);
     }
 
     function distribute(address inboundAddress) public isExecutor {
         updateCommunitySplitsByTHORBalance();
+        uint32 preciseBps = 10_000_000;
 
         // 1. Check USDC balance and check its above threshold
         uint256 balance = feeAsset.balanceOf(address(this));
         require(balance >= rewardAmountThreshold, "Balance below threshold");
 
         // 2. Compute Treasury portion
-        uint256 treasuryAmount = (balance * treasuryBps) / 10000;
-        uint256 communityAmount = balance - treasuryAmount;
+        uint256 treasuryAmount = (balance * treasuryPreciseBps) / preciseBps;
 
         // 3. Treasury transfer
         feeAsset.transfer(treasuryWallet, treasuryAmount);
 
         // 4. Split the community amount into sub-allocations
-        uint256 uPortion = (communityAmount * uThorBps) / 10000;
-        uint256 yPortion = (communityAmount * yThorBps) / 10000;
-        uint256 vPortion = (communityAmount * vThorBps) / 10000;
-        uint256 pPortion = (communityAmount * thorPoolBps) / 10000;
-        uint256 swapBackToRunePortion = vPortion + pPortion; // single chunk for Thorchain
+        uint256 uPortion = (balance * uThorPreciseBps) / preciseBps;
+        uint256 yPortion = (balance * yThorPreciseBps) / preciseBps;
+        uint256 swapBackToRunePortion = balance -
+            (treasuryAmount + uPortion + yPortion); // vPortion and pPortion combined
 
         // 5. Send USDC to uThor & yThor via depositRewards()
         IRewardsReceiver(address(uThorToken)).depositRewards(uPortion);
@@ -176,6 +181,12 @@ contract TSFeeDistributor_V3 is Owners, Executors {
         );
 
         // 7. Emit a single event summarizing the distribution
-        emit Distribution(balance, thorPoolBps, uThorBps, vThorBps, yThorBps);
+        emit Distribution(
+            balance,
+            thorPoolPreciseBps,
+            uThorPreciseBps,
+            vThorPreciseBps,
+            yThorPreciseBps
+        );
     }
 }
