@@ -29,14 +29,10 @@ contract TSFeeDistributor_V3 is Owners, Executors {
     // ------------------------------------------------------
     // Config
     // ------------------------------------------------------
-    // "treasuryBps + communityBps = 10000" (100%).
+    // "treasuryPreciseBps + communityPreciseBps = 10000000" (100%).
     uint32 public treasuryPreciseBps; // e.g. 2500bps = 2_500_000[1000bps] = 25%
     uint32 public communityPreciseBps; // e.g. 7500bps = 7_500_000[1000bps] = 75%
     uint256 public rewardAmountThreshold;
-
-    // Within the community portion, split among uThor, yThor, vThor, thorPool.
-    // Example: If communityBps = 7500, and uThorBps=1000, yThorBps=3000, vThorBps=2000, thorPoolBps=1500,
-    // that totals 7500.
     uint32 public uThorPreciseBps;
     uint32 public yThorPreciseBps;
     uint32 public vThorPreciseBps;
