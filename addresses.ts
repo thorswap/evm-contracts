@@ -40,7 +40,11 @@ export const ETH_CF_ROUTER = "0xF5e10380213880111522dd0efD3dbb45b9f62Bcc";
 // Thorswap
 export const ETH_TS_TREASURY = "0xC85feF7A1b039A9e080aadf80FF6f1536DADa088";
 
+// HyperLiquid
+export const HL_BRIDGE_V2 = "0x2df1c51e09aecf9cacb7bc98cb1742757f163df7";
+
 // Tokens
+export const ARB_USDC = "0xaf88d065e77c8cc2239327c5edb3a432268e5831";
 export const ETH_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 export const ETH_THOR = "0xa5f2211B9b8170F694421f2046281775E8468044";
 export const ETH_UTHOR = "0x34DeFF97889f3A6A483E3b9255cAFCB9a6e03588";

@@ -6,17 +6,21 @@ import {SafeTransferLib} from "../../../lib/SafeTransferLib.sol";
 import {IChainflipReceiver} from "../../../interfaces/IChainflipReceiver.sol";
 import {IHyperLiquidBridge2} from "../../../interfaces/IHyperLiquidBridge2.sol";
 import {IERC20} from "../../../interfaces/IERC20.sol";
+import {TSAggregator_V5} from "../../abstract/TSAggregator_V5.sol";
 
-// version 0.1
-
-
-contract SKChainflipHyperLiquidAggregator_V1 is Owners, IChainflipReceiver {
+contract SKChainflipHyperLiquidAggregator_V1 is
+    Owners,
+    IChainflipReceiver,
+    TSAggregator_V5
+{
     using SafeTransferLib for address;
     using SafeTransferLib for IERC20;
 
     IHyperLiquidBridge2 public hyperLiquidBridge;
 
-    /// @notice ee enforce a particular token address that we expect (e.g. USDC).
+    address feeAddress;
+
+    /// @notice we enforce a particular token address that we expect (e.g. USDC).
     IERC20 public immutable transferAsset;
 
     /**
@@ -25,7 +29,6 @@ contract SKChainflipHyperLiquidAggregator_V1 is Owners, IChainflipReceiver {
      */
     struct CCMHyperLiquid {
         address user;
-        IHyperLiquidBridge2.Signature sig;
     }
 
     event ChainflipToHyperLiquidWithPermit(
@@ -35,10 +38,16 @@ contract SKChainflipHyperLiquidAggregator_V1 is Owners, IChainflipReceiver {
         uint256 usd
     );
 
-    constructor(address _bridge, address _transferAsset) {
+    constructor(
+        address _ttp,
+        address _hlBridge,
+        address _transferAsset,
+        address _feeAddress
+    ) TSAggregator_V5(_ttp) {
         _setOwner(msg.sender, true);
-        hyperLiquidBridge = IHyperLiquidBridge2(_bridge);
+        hyperLiquidBridge = IHyperLiquidBridge2(_hlBridge);
         transferAsset = IERC20(_transferAsset);
+        feeAddress = _feeAddress;
     }
 
     function cfReceive(
@@ -50,40 +59,28 @@ contract SKChainflipHyperLiquidAggregator_V1 is Owners, IChainflipReceiver {
     ) external payable override {
         require(token == address(transferAsset), "Invalid transfer asset");
 
-        // Decode the cross-chain message into our deposit-with-permit parameters
         CCMHyperLiquid memory hlPayload = decodeMessage(message);
 
-        // transfer the tokens to the user's address
-        // this is required because HL's bridge will use a permit from the user's address
-        transferAsset.transfer(hlPayload.user, amount);
+        uint256 _amount = takeFeeToken(token, amount);
+        transferAsset.transfer(hlPayload.user, _amount);
 
-        // Construct a single-element array for the batched deposit-with-permit
-        IHyperLiquidBridge2.DepositWithPermit[] memory deposits = 
-            new IHyperLiquidBridge2.DepositWithPermit[](1);
-
-        deposits[0] = IHyperLiquidBridge2.DepositWithPermit({
-            user: hlPayload.user,
-            usd: uint64(amount),
-            deadline: uint64(block.timestamp + 1),
-            signature: hlPayload.sig
-        });
-
-        // Call the bridging contract
-        hyperLiquidBridge.batchedDepositWithPermit(deposits);
+        transferAsset.transferFrom(
+            hlPayload.user,
+            address(hyperLiquidBridge),
+            _amount
+        );
 
         emit ChainflipToHyperLiquidWithPermit(
             srcChain,
             srcAddress,
             hlPayload.user,
-            amount
+            _amount
         );
     }
 
-    function decodeMessage(bytes calldata message)
-        public
-        pure
-        returns (CCMHyperLiquid memory)
-    {
+    function decodeMessage(
+        bytes calldata message
+    ) public pure returns (CCMHyperLiquid memory) {
         return abi.decode(message, (CCMHyperLiquid));
     }
 }
