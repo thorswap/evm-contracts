@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Thorswap's suite of EVM Smart Contracts",
   "scripts": {
+    "compile": "npx hardhat compile",
+    "deploy:arb": "npx hardhat run --network arbitrum ./scripts/deploy.ts",
+    "deploy:eth": "npx hardhat run --network mainnet ./scripts/deploy.ts",
     "test": "hardhat test"
   },
   "repository": {

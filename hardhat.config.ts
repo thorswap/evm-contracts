@@ -151,4 +151,8 @@ const config: HardhatUserConfig = {
   },
 };
 
+if(!config.etherscan?.apiKey) {
+  throw new Error("Etherscan API key is required");
+}
+
 export default config;

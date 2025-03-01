@@ -10,10 +10,11 @@ import {
   HL_BRIDGE_V2,
   ARB_USDC,
   FEE_RECIPIENT_ETH,
+  ARB_CF_VAULT,
 } from "../addresses";
 
-const CONTRACT_NAME = "SKChainflipHyperLiquidAggregator_V1";
-const CONTRACT_ARGS = [ARB_TTP, HL_BRIDGE_V2, ARB_USDC, FEE_RECIPIENT_ETH];
+const CONTRACT_NAME = "SKChainflipHyperLiquid_V1";
+const CONTRACT_ARGS = [ARB_TTP, HL_BRIDGE_V2, ARB_USDC, FEE_RECIPIENT_ETH, ARB_CF_VAULT];
 
 // const CONTRACT_NAME = "TSAggregatorTokenTransferProxy";
 // const CONTRACT_ARGS: any[] = [];

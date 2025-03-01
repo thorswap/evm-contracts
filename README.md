@@ -13,7 +13,9 @@ Compile contracts with `npx hardhat compile`.
 Simply `npx hardhat test`
 
 ## Deploying
-Carefully set up `./scripts/deploy.ts` and run `npx hardhat run --network mainnet ./scripts/deploy.ts`.
+1. Carefully set up `./scripts/deploy.ts`
+2. Review `./hardhat.config.ts` API keys
+3. run `npx hardhat run --network mainnet ./scripts/deploy.ts`.
 
 ## Manual verification
 For Avax: copy this config: https://snowtrace.io/documentation/recipes/hardhat-verification
