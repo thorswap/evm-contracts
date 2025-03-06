@@ -53,7 +53,7 @@ async function main() {
   }
 
   // optional: invoke methods
-  await contract.setFee(20, FEE_RECIPIENT_ETH)
+  await contract.setFee(20, FEE_RECIPIENT_ETH);
   await contract.setRevOnAllTokens(true);
   // console.log("Fee set");
   // await contract.setMemoCommunity(0, "=:ETH.THOR-044:0x815C23eCA83261b6Ec689b60Cc4a58b54BC24D8D:0/1/0:t:0")

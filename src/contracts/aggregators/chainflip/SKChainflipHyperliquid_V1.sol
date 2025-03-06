@@ -9,6 +9,10 @@ import {IERC20} from "../../../interfaces/IERC20.sol";
 import {TSAggregator_V5} from "../../abstract/TSAggregator_V5.sol";
 import {SKChainflipAggregator_V1} from "../../abstract/SKChainflipAggregator_V1.sol";
 
+/**
+ * @notice 1 USDC will remain in the contract to facilitate gas estimation
+ */
+
 contract SKChainflipHyperLiquid_V1 is
     Owners,
     IChainflipReceiver,
@@ -21,6 +25,7 @@ contract SKChainflipHyperLiquid_V1 is
     IHyperLiquidBridge2 public hyperLiquidBridge;
 
     address feeAddress;
+    uint256 oneUSDC = 1e6;
 
     /// @notice we enforce a particular token address that we expect (e.g. USDC).
     IERC20 public immutable transferAsset;
@@ -37,7 +42,7 @@ contract SKChainflipHyperLiquid_V1 is
         uint32 srcChain,
         bytes srcAddress,
         address user,
-        uint256 usd
+        uint256 amount
     );
 
     constructor(
@@ -60,12 +65,14 @@ contract SKChainflipHyperLiquid_V1 is
         bytes calldata message,
         address token,
         uint256 amount
-    ) external payable onlyCfVault {
+    ) external payable onlyCfVault nonReentrant {
         require(token == address(transferAsset), "Invalid transfer asset");
 
         CCMHyperLiquid memory hlPayload = decodeMessage(message);
 
-        uint256 _amount = takeFeeToken(token, amount);
+        // see notice
+        uint256 balance = transferAsset.balanceOf(address(this)) - oneUSDC;
+        uint256 _amount = takeFeeToken(token, balance);
         transferAsset.transfer(hlPayload.user, _amount);
 
         transferAsset.transferFrom(
@@ -78,7 +85,7 @@ contract SKChainflipHyperLiquid_V1 is
             srcChain,
             srcAddress,
             hlPayload.user,
-            _amount
+            amount
         );
     }
 
