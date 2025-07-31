@@ -38,7 +38,6 @@ contract TSFeeDistributor_V4 is Owners, Executors {
     // "treasuryPreciseBps + communityPreciseBps = 10000000" (100%).
     uint32 public treasuryPreciseBps; // e.g. 2500bps = 2_500_000[1000bps] = 25%
     uint32 public communityPreciseBps; // e.g. 7500bps = 7_500_000[1000bps] = 75%
-    uint256 public rewardAmountThreshold;
 
     // Dynamic community splits (calculated per distribution)
     uint32 public uThorPreciseBps;
@@ -51,7 +50,6 @@ contract TSFeeDistributor_V4 is Owners, Executors {
     // ------------------------------------------------------
     struct PendingDistribution {
         bool isActive;              // Whether a distribution is pending
-        uint256 snapshotTimestamp;  // When the snapshot was taken
         uint256 totalAmount;        // Total USDC amount being distributed
         uint256 treasuryAmount;     // USDC for treasury
         uint256 uThorAmount;        // USDC for uThor
@@ -65,9 +63,6 @@ contract TSFeeDistributor_V4 is Owners, Executors {
     }
 
     PendingDistribution public pendingDistribution;
-    
-    // Maximum time to wait for cross-chain operations (24 hours)
-    uint256 public constant MAX_PENDING_DURATION = 24 hours;
 
     // ------------------------------------------------------
     // Events
@@ -122,11 +117,7 @@ contract TSFeeDistributor_V4 is Owners, Executors {
         feeAsset.approve(_uThorToken, type(uint256).max);
         feeAsset.approve(_yThorToken, type(uint256).max);
 
-        // Approve router to spend THOR for vThor rewards
-        thorToken.approve(address(vThorToken), type(uint256).max);
-
         // Basic config
-        rewardAmountThreshold = 20_000_000_000; // 20k usdc
         treasuryWallet = _treasuryWallet;
 
         // Setup owners/executors
@@ -136,10 +127,6 @@ contract TSFeeDistributor_V4 is Owners, Executors {
     // ------------------------------------------------------
     // Owner Setters
     // ------------------------------------------------------
-    function setThreshold(uint256 amount) external isOwner {
-        rewardAmountThreshold = amount;
-    }
-
     function setTCRouter(address _tcRouterAddress) public isOwner {
         tcRouter = IThorchainRouterV4(_tcRouterAddress);
         feeAsset.approve(_tcRouterAddress, 0);
@@ -172,12 +159,6 @@ contract TSFeeDistributor_V4 is Owners, Executors {
      */
     function cancelPendingDistribution() external isOwner {
         require(pendingDistribution.isActive, "No pending distribution");
-        require(
-            block.timestamp > pendingDistribution.snapshotTimestamp + MAX_PENDING_DURATION,
-            "Distribution not expired yet"
-        );
-        
-        emit PendingDistributionCancelled(pendingDistribution.snapshotTimestamp);
         delete pendingDistribution;
     }
 
@@ -215,7 +196,7 @@ contract TSFeeDistributor_V4 is Owners, Executors {
     }
 
     // ------------------------------------------------------
-    // Phase 1: Cross-Chain Preparation
+    // Phase 1: Swap feeAsset to RUNE
     // ------------------------------------------------------
     
     /**
@@ -227,19 +208,14 @@ contract TSFeeDistributor_V4 is Owners, Executors {
      *      4. Swaps required USDC to THOR for vThor rewards
      *      5. Stores all parameters for later atomic distribution
      * @param inboundAddress The Thorchain inbound address for cross-chain operations
-     * @param thorBuybackMemo Thorchain memo for USDC->THOR swap
-     * @param runeMemo Thorchain memo for USDC->RUNE swap for LP
      */
     function swapToRune(
-        address inboundAddress,
-        string calldata thorBuybackMemo,
-        string calldata runeMemo
+        address inboundAddress
     ) external isExecutor {
         require(!pendingDistribution.isActive, "Distribution already pending");
         
-        // 1. Check USDC balance and threshold
+        // 1. Check USDC balance
         uint256 balance = feeAsset.balanceOf(address(this));
-        require(balance >= rewardAmountThreshold, "Balance below threshold");
 
         // 2. Update community splits based on current THOR balances
         updateCommunitySplitsByTHORBalance();
@@ -256,7 +232,6 @@ contract TSFeeDistributor_V4 is Owners, Executors {
         // 4. Store distribution parameters in memory
         pendingDistribution = PendingDistribution({
             isActive: true,
-            snapshotTimestamp: block.timestamp,
             totalAmount: balance,
             treasuryAmount: treasuryAmount,
             uThorAmount: uPortion,
@@ -271,23 +246,12 @@ contract TSFeeDistributor_V4 is Owners, Executors {
 
         // 5. Execute cross-chain swaps
         // Swap for THOR tokens (vThor rewards)
-        if (vPortion > 0) {
+        if (vPortion + poolPortion > 0) {
             tcRouter.depositWithExpiry{value: 0}(
                 payable(inboundAddress),
                 address(feeAsset),
-                vPortion,
-                thorBuybackMemo, // e.g., "=:ETH.THOR:CONTRACT_ADDRESS:0"
-                type(uint256).max
-            );
-        }
-
-        // Swap for RUNE (thorPool LP donation)
-        if (poolPortion > 0) {
-            tcRouter.depositWithExpiry{value: 0}(
-                payable(inboundAddress),
-                address(feeAsset),
-                poolPortion,
-                runeMemo, // e.g., "=:r:CONTRACT_ADDRESS:0"
+                vPortion + poolPortion,
+                "=:r:t:0/1/0:t:0",
                 type(uint256).max
             );
         }
@@ -313,15 +277,9 @@ contract TSFeeDistributor_V4 is Owners, Executors {
      *      - USDC to treasury
      *      - USDC to uThor and yThor via depositRewards()
      *      - THOR to vThor via depositRewards() (from cross-chain swap)
-     * @param runeDonationMemo Optional memo for RUNE LP donation coordination
      */
-    function distribute(string calldata runeDonationMemo) external isExecutor {
+    function distribute() external isExecutor {
         require(pendingDistribution.isActive, "No pending distribution");
-        require(
-            block.timestamp <= pendingDistribution.snapshotTimestamp + MAX_PENDING_DURATION,
-            "Pending distribution expired"
-        );
-
         PendingDistribution memory dist = pendingDistribution;
 
         // 1. Send treasury portion
@@ -345,14 +303,7 @@ contract TSFeeDistributor_V4 is Owners, Executors {
             IRewardsReceiver(address(vThorToken)).depositRewards(vThorReward);
         }
 
-        // 4. Optional: Coordinate RUNE LP donation
-        // This would typically be done externally, but we can emit guidance
-        if (bytes(runeDonationMemo).length > 0) {
-            // This is informational - actual RUNE donation happens off-chain
-            // or through a separate coordinated transaction
-        }
-
-        // 5. Clear pending distribution state
+        // 4. Clear pending distribution state
         delete pendingDistribution;
 
         emit Distribution(
@@ -384,10 +335,7 @@ contract TSFeeDistributor_V4 is Owners, Executors {
         if (!pendingDistribution.isActive) {
             return (false, "No pending distribution");
         }
-        
-        if (block.timestamp > pendingDistribution.snapshotTimestamp + MAX_PENDING_DURATION) {
-            return (false, "Distribution expired");
-        }
+
 
         uint256 thorBalance = thorToken.balanceOf(address(this));
         if (thorBalance < pendingDistribution.vThorAmount) {
@@ -403,8 +351,6 @@ contract TSFeeDistributor_V4 is Owners, Executors {
      */
     function emergencyRecoverToken(address token, uint256 amount) external isOwner {
         require(!pendingDistribution.isActive, "Cannot recover during pending distribution");
-        require(token != address(feeAsset) || amount <= feeAsset.balanceOf(address(this)) - rewardAmountThreshold, "Cannot recover distribution funds");
-        
         IERC20(token).transfer(msg.sender, amount);
     }
 }
