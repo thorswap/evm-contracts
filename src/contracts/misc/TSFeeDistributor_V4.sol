@@ -298,9 +298,7 @@ contract TSFeeDistributor_V4 is Owners, Executors {
         // 3. Send THOR rewards to vThor (assuming cross-chain swap completed)
         uint256 thorBalance = thorToken.balanceOf(address(this));
         if (thorBalance > 0 && dist.vThorAmount > 0) {
-            // Use available THOR balance up to expected amount
-            uint256 vThorReward = thorBalance >= dist.vThorAmount ? dist.vThorAmount : thorBalance;
-            IRewardsReceiver(address(vThorToken)).depositRewards(vThorReward);
+            thorToken.transfer(address(vThorToken), dist.vThorAmount);
         }
 
         // 4. Clear pending distribution state
