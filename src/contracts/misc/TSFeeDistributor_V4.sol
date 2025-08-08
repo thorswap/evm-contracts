@@ -309,7 +309,7 @@ contract TSFeeDistributor_V4 is Owners, Executors {
             dist.treasuryAmount,
             dist.uThorAmount,
             dist.yThorAmount,
-            thorBalance >= dist.vThorAmount ? dist.vThorAmount : thorBalance,
+            thorBalance,
             dist.thorPoolAmount
         );
     }
