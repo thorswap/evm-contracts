@@ -69,7 +69,7 @@ export const OP_CONFIG = {
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   etherscan: {
-    apiKey: ARBISCAN_API_KEY,
+    apiKey: ETHERSCAN_API_KEY,
   },
   networks: {
     hardhat: {
@@ -149,9 +149,16 @@ const config: HardhatUserConfig = {
     sources: "./src/contracts",
     tests: "./test",
   },
+  typechain: {
+    outDir: "src/types",
+    target: "ethers-v6",
+    alwaysGenerateOverloads: false, // should overloads with full signatures like deposit(uint256) be generated always, even if there are no overloads?
+    externalArtifacts: ["externalArtifacts/*.json"], // optional array of glob patterns with external artifacts to process (for example external libs from node_modules)
+    dontOverrideCompile: false, // defaults to false
+  },
 };
 
-if(!config.etherscan?.apiKey) {
+if (!config.etherscan?.apiKey) {
   throw new Error("Etherscan API key is required");
 }
 
