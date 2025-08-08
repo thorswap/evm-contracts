@@ -16,8 +16,9 @@ import {
 } from "../addresses";
 
 // Executor addresses that can call swapToRune() and distribute()
+// add addresses here as needed or don't if you plan to set them later
 const EXECUTOR_ADDRESSES = [
-  "0xAD3111CBcf4580ca05bb2d14A3A35c40a1B89AF2", // Replace with actual executor addresses
+  "0x0000000000000000000000000000000000000000", // Replace with actual executor addresses
 ];
 
 const CONTRACT_NAME = "TSFeeDistributor_V4";
