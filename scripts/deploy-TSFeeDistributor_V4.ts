@@ -17,9 +17,7 @@ import {
 
 // Executor addresses that can call swapToRune() and distribute()
 // add addresses here as needed or don't if you plan to set them later
-const EXECUTOR_ADDRESSES = [
-  "0x0000000000000000000000000000000000000000", // Replace with actual executor addresses
-];
+const OtherExecutorAddresses: string[] = [];
 
 const CONTRACT_NAME = "TSFeeDistributor_V4";
 const CONTRACT_ARGS = [
@@ -51,6 +49,7 @@ async function main() {
   console.log("Deploying TSFeeDistributor_V4...");
   console.log("Network:", hre.network.name);
   console.log("Deployer:", deployerAddress);
+  const EXECUTOR_ADDRESSES = [deployerAddress, ...OtherExecutorAddresses];
 
   // deploy contract
   const contract = await ethers.deployContract(CONTRACT_NAME, CONTRACT_ARGS);
