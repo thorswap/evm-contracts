@@ -88,6 +88,7 @@ contract SKSwapGeneric_V1 is SKAggregator_V1 {
             recipient,
             amountIn,
             amountOut,
+            swapResult,
             swapAmount,
             feeConfig
         );
@@ -220,6 +221,7 @@ contract SKSwapGeneric_V1 is SKAggregator_V1 {
         uint256 amountIn,
         uint256 amountOut,
         uint256 swapAmount,
+        uint256 swapResult,
         FeeConfig calldata feeConfig
     ) private {
         uint256 feeAmount = 0;
@@ -236,16 +238,12 @@ contract SKSwapGeneric_V1 is SKAggregator_V1 {
             }
         } else {
             // For output fees, we need to calculate based on the original output before fees
-            uint256 originalOutput = amountOut;
             if (feeConfig.feeBps > 0 || feeConfig.affiliateFeeBps > 0) {
                 // Reverse calculate original amount before fees
-                uint256 totalFeeBps = feeConfig.feeBps +
-                    feeConfig.affiliateFeeBps;
-                originalOutput = (amountOut * 10000) / (10000 - totalFeeBps);
-                feeAmount = getFee(feeConfig.feeBps, originalOutput);
+                feeAmount = _calcBps(feeConfig.feeBps, swapResult);
                 affiliateFeeAmount = _calcBps(
                     feeConfig.affiliateFeeBps,
-                    originalOutput
+                    swapResult
                 );
             }
         }
