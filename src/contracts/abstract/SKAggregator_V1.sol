@@ -10,9 +10,13 @@ abstract contract SKAggregator_V1 is Owners, ReentrancyGuard {
     using SafeTransferLib for address;
 
     event SKAddressSet(address skRecipient);
+    event AddressAdded(address indexed addr);
+    event AddressRemoved(address indexed addr);
 
     address public skRecipient;
     TSAggregatorTokenTransferProxy public tokenTransferProxy;
+
+    mapping(address => bool) public knownAddresses;
 
     constructor(address _tokenTransferProxy) {
         _setOwner(msg.sender, true);
@@ -27,6 +31,26 @@ abstract contract SKAggregator_V1 is Owners, ReentrancyGuard {
     function setSKAddress(address _skRecipient) external isOwner {
         skRecipient = _skRecipient;
         emit SKAddressSet(_skRecipient);
+    }
+
+    function addAddress(address addr) external isOwner {
+        require(addr != address(0), "invalid address");
+        require(addr != address(tokenTransferProxy), "cannot add ttp");
+        require(!knownAddresses[addr], "address already known");
+
+        knownAddresses[addr] = true;
+        emit AddressAdded(addr);
+    }
+
+    function removeAddress(address addr) external isOwner {
+        require(knownAddresses[addr], "address not known");
+
+        knownAddresses[addr] = false;
+        emit AddressRemoved(addr);
+    }
+
+    function isAddressKnown(address addr) public view returns (bool) {
+        return knownAddresses[addr];
     }
 
     function takeFeeGas(uint256 feeBps, uint256 amount) internal returns (uint256) {
