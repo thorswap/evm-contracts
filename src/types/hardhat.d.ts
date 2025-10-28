@@ -222,6 +222,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.VTHOR__factory>;
     getContractFactory(
+      name: "IuTHOR",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IuTHOR__factory>;
+    getContractFactory(
+      name: "XTHORIndividualVesting",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.XTHORIndividualVesting__factory>;
+    getContractFactory(
       name: "YieldTHOR",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.YieldTHOR__factory>;
@@ -563,6 +571,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.VTHOR>;
     getContractAt(
+      name: "IuTHOR",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IuTHOR>;
+    getContractAt(
+      name: "XTHORIndividualVesting",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.XTHORIndividualVesting>;
+    getContractAt(
       name: "YieldTHOR",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -872,6 +890,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.VTHOR>;
     deployContract(
+      name: "IuTHOR",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IuTHOR>;
+    deployContract(
+      name: "XTHORIndividualVesting",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XTHORIndividualVesting>;
+    deployContract(
       name: "YieldTHOR",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.YieldTHOR>;
@@ -1212,6 +1238,16 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.VTHOR>;
+    deployContract(
+      name: "IuTHOR",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IuTHOR>;
+    deployContract(
+      name: "XTHORIndividualVesting",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XTHORIndividualVesting>;
     deployContract(
       name: "YieldTHOR",
       args: any[],

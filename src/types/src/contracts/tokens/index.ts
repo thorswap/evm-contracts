@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as thorSol from "./THOR.sol";
 export type { thorSol };
+import type * as xThorSol from "./xTHOR.sol";
+export type { xThorSol };
 export type { UTHOR } from "./UTHOR";
 export type { VTHOR } from "./VTHOR";
 export type { YTHOR } from "./YTHOR";

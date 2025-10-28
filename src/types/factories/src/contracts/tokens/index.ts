@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as thorSol from "./THOR.sol";
+export * as xThorSol from "./xTHOR.sol";
 export { UTHOR__factory } from "./UTHOR__factory";
 export { VTHOR__factory } from "./VTHOR__factory";
 export { YTHOR__factory } from "./YTHOR__factory";

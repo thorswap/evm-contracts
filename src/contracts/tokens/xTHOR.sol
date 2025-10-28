@@ -38,6 +38,8 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
     // Amount of uTHOR already released to beneficiary
     uint256 public released;
 
+    // Amount of uTHOR withdrawn by owner in emergency (reduces effective total)
+    uint256 public emergencyWithdrawn;
 
     // Whether claiming is enabled
     bool public claimingEnabled;
@@ -49,6 +51,8 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
     event RewardsClaimed(uint256 amount);
     event ClaimingEnabled();
     event VestingRevoked(address indexed beneficiary, uint256 unvestedAmount);
+    event EmergencyWithdrawUTHOR(uint256 amount);
+    event EmergencyWithdrawUSDC(uint256 amount);
     event BeneficiaryUpdated(address indexed oldBeneficiary, address indexed newBeneficiary);
     
     modifier onlyBeneficiary() {
@@ -79,6 +83,7 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
         vestingDuration = _vestingDuration;
         claimingEnabled = false;
         revoked = false;
+        emergencyWithdrawn = 0;
     }
     
     /**
@@ -121,13 +126,14 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
         // Calculate vested uTHOR tokens
         uint256 vested = _vestedAmount(block.timestamp);
         uint256 unreleased = vested > released ? vested - released : 0;
+		uint256 available = unreleased - emergencyWithdrawn;
 
 
-        require(unreleased > 0, "xTHOR: No vested tokens available");
+        require(available > 0, "xTHOR: No vested tokens available");
 
-        // Limit transfer to actual contract balance
+        // Limit transfer to actual contract balance (accounts for emergency withdrawals)
         uint256 contractBalance = uTHOR.balanceOf(address(this));
-        uint256 toTransfer = unreleased > contractBalance ? contractBalance : unreleased;
+        uint256 toTransfer = available > contractBalance ? contractBalance : available;
 
         require(toTransfer > 0, "xTHOR: No tokens available for transfer");
 
@@ -145,7 +151,9 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
             ", Vested: ",
             _toString(vested),
             ", Released: ",
-            _toString(released)
+            _toString(released),
+            ", Emergency withdrawn: ",
+            _toString(emergencyWithdrawn)
         )));
 
         // Now transfer the available uTHOR tokens
@@ -242,6 +250,16 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
     }
     
     /**
+     * @notice Owner can update the beneficiary address
+     */
+    function updateBeneficiary(address newBeneficiary) external onlyOwner {
+        require(newBeneficiary != address(0), "xTHOR: New beneficiary cannot be zero address");
+        address oldBeneficiary = beneficiary;
+        beneficiary = newBeneficiary;
+        emit BeneficiaryUpdated(oldBeneficiary, newBeneficiary);
+    }
+
+    /**
      * @notice Owner can deposit uTHOR tokens to this contract
      */
     function depositUTHOR(uint256 amount) external onlyOwner {
@@ -249,19 +267,30 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
     }
     
     /**
-     * @notice Owner can update the beneficiary address
-     * @dev Claims any pending rewards for the old beneficiary first
+     * @notice Emergency function for owner to withdraw all tokens
+     * @dev Claims pending USDC rewards first, withdraws all USDC, then withdraws all uTHOR
      */
-    function updateBeneficiary(address newBeneficiary) external onlyOwner {
-        require(newBeneficiary != address(0), "xTHOR: New beneficiary cannot be zero address");
-        require(newBeneficiary != beneficiary, "xTHOR: New beneficiary same as current");
+    function emergencyWithdraw() external onlyOwner {
+        // First claim any pending USDC rewards from uTHOR contract
+        uTHOR.claimRewards();
 
-        address oldBeneficiary = beneficiary;
+        // Withdraw all USDC balance to owner
+        uint256 usdcBalance = rewardToken.balanceOf(address(this));
+        if (usdcBalance > 0) {
+            require(rewardToken.transfer(owner(), usdcBalance), "xTHOR: USDC transfer failed");
+            emit EmergencyWithdrawUSDC(usdcBalance);
+        }
 
+        // Then withdraw all uTHOR balance to owner
+        uint256 uthorBalance = uTHOR.balanceOf(address(this));
+        if (uthorBalance > 0) {
+            require(uTHOR.transfer(owner(), uthorBalance), "xTHOR: uTHOR transfer failed");
+            emit EmergencyWithdrawUTHOR(uthorBalance);
+        }
 
-        beneficiary = newBeneficiary;
-        emit BeneficiaryUpdated(oldBeneficiary, newBeneficiary);
+        require(usdcBalance > 0 || uthorBalance > 0, "xTHOR: No tokens to withdraw");
     }
+    
     
     /**
      * @notice Get vesting schedule information
@@ -272,6 +301,7 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
         uint256 _cliffDuration,
         uint256 _vestingDuration,
         uint256 _released,
+        uint256 _emergencyWithdrawn,
         bool _claimingEnabled,
         bool _revoked
     ) {
@@ -281,6 +311,7 @@ contract xTHORIndividualVesting is Ownable, ReentrancyGuard {
             cliffDuration,
             vestingDuration,
             released,
+            emergencyWithdrawn,
             claimingEnabled,
             revoked
         );
