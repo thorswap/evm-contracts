@@ -13,12 +13,12 @@ interface IRewardsReceiver {
 }
 
 /**
- * @title TSFeeDistributor_V4
+ * @title TSFeeDistributor_V5
  * @notice Two-phase distribution system to prevent double-dipping vulnerability
  * @dev Phase 1: swapToRune() prepares cross-chain swaps and stores distribution amounts
  *      Phase 2: distribute() executes atomic distribution using stored amounts
  */
-contract TSFeeDistributor_V4 is Owners, Executors {
+contract TSFeeDistributor_V5 is Owners, Executors {
     using SafeTransferLib for address;
 
     // ------------------------------------------------------
