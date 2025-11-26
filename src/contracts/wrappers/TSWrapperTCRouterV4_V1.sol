@@ -47,9 +47,9 @@ contract TSWrapperTCRouterV4_V1 is Owners, TSAggregator_V5 {
 
     // TCRouterV4 only support swapOut with gas assets
     function swapOut(
-        address token,
-        address to,
-        uint256 amountOutMin
+        // address token,
+        address to
+        // uint256 amountOutMin
     ) public payable nonReentrant {
         uint256 safeAmount = takeFeeGas(msg.value);
         to.safeTransferETH(safeAmount);

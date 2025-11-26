@@ -31,7 +31,7 @@ contract TSFeeDistributor_V5 is Owners, Executors {
     IERC20 public yThorToken;
     IERC20 public vThorToken;
     address public treasuryWallet;
-    address public constant burnWallet = address(0);
+    address public constant burnWallet = 0x000000000000000000000000000000000000dEaD;
 
     // ------------------------------------------------------
     // Config
@@ -86,7 +86,8 @@ contract TSFeeDistributor_V5 is Owners, Executors {
         uint256 uThorAmount,
         uint256 yThorAmount,
         uint256 vThorAmount,
-        uint256 thorPoolAmount
+        uint256 thorPoolAmount,
+        uint256 burnAmount
     );
 
     event PendingDistributionCancelled(uint256 timestamp);
@@ -165,6 +166,7 @@ contract TSFeeDistributor_V5 is Owners, Executors {
      */
     function cancelPendingDistribution() external isOwner {
         require(pendingDistribution.isActive, "No pending distribution");
+        emit PendingDistributionCancelled(block.timestamp);
         delete pendingDistribution;
     }
 
@@ -306,17 +308,20 @@ contract TSFeeDistributor_V5 is Owners, Executors {
         }
 
         // 3. Split $thor balance for burn and vThor
+        uint256 thorForBurn = 0;
+        uint256 thorForVThor = 0;
+
         if (thorBalance > 0) {
-            uint256 thorForBurn = 0;
-            uint256 thorForVThor = 0;
             // Get total USDC to calc split (usdc 6 decimals)
             uint256 totalUsdc = dist.vThorAmount + dist.thorPoolAmount + dist.burnAmount;
-            // Get $thor amount(18decimals) for burn based on usdc share split. 
-            thorForBurn = (thorBalance * dist.burnAmount) / totalUsdc;
+            // Get $thor amount(18decimals) for burn based on usdc share split.
+            if (totalUsdc > 0) {
+                thorForBurn = (thorBalance * dist.burnAmount) / totalUsdc;
+            }
             // Send rest to vThor (+dust)
             thorForVThor = thorBalance - thorForBurn;
 
-            if(thorForBurn > 0){
+            if(thorForBurn > 0 && burnWallet != address(0)){
                 thorToken.transfer(address(burnWallet), thorForBurn);
             }
             if (thorForVThor > 0) {
@@ -333,8 +338,9 @@ contract TSFeeDistributor_V5 is Owners, Executors {
             dist.treasuryAmount,
             dist.uThorAmount,
             dist.yThorAmount,
-            thorBalance,
-            dist.thorPoolAmount
+            thorForVThor,
+            dist.thorPoolAmount,
+            thorForBurn
         );
     }
 
