@@ -1,11 +1,8 @@
-import { defineConfig } from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
 import "tsconfig-paths/register";
-import hardhatToolboxMochaEthers from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
-import hardhatVerify from "@nomicfoundation/hardhat-verify";
 
-// Use dynamic import for dotenv in ESM
-const dotenv = await import("dotenv");
-dotenv.config();
+require("dotenv").config();
 
 export const TS_DEPLOYER_PK = process.env.TS_DEPLOYER_PRIVATE_KEY || "";
 export const TS_DEPLOYER_ADDRESS = process.env.TS_DEPLOYER_PUBLIC_ADDRESS || "";
@@ -19,17 +16,6 @@ export const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY || "";
 
 export const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
 export const CMC_API_KEY = process.env.CMC_API_KEY || "";
-export const QUICKNODE_API_KEY = process.env.QUICKNODE_API_KEY;
-
-// RPC URLs
-export const AVAX_RPC_URL = process.env.AVAX_RPC_URL || "";
-export const ARB_RPC_URL = process.env.ARB_RPC_URL || "";
-export const BASE_RPC_URL = process.env.BASE_RPC_URL || "";
-export const BSC_RPC_URL = process.env.BSC_RPC_URL || "";
-export const ETH_RPC_URL = process.env.ETH_RPC_URL || "";
-export const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL || "";
-export const OP_RPC_URL = process.env.OP_RPC_URL || "";
-export const HARDHAT_RPC_URL = process.env.HARDHAT_RPC_URL || "";
 
 // helpers
 export const HARDHAT_DEPLOYER_ADDRESS =
@@ -37,67 +23,101 @@ export const HARDHAT_DEPLOYER_ADDRESS =
 export const E_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const AVAX_CONFIG = {
-  type: "http" as const,
-  url: AVAX_RPC_URL,
+  url: "https://api.avax.network/ext/bc/C/rpc",
   gasPrice: 225000000000,
   chainId: 43114,
   accounts: [TS_DEPLOYER_PK],
 };
 
 export const ARB_CONFIG = {
-  type: "http" as const,
-  url: ARB_RPC_URL,
+  url: "https://arb1.arbitrum.io/rpc",
   chainId: 42161,
   accounts: [TS_DEPLOYER_PK],
 };
 
 export const BASE_CONFIG = {
-  type: "http" as const,
-  url: BASE_RPC_URL,
+  url: "https://base.llamarpc.com",
   chainId: 8453,
   accounts: [TS_DEPLOYER_PK],
 };
 
 export const BSC_CONFIG = {
-  type: "http" as const,
-  url: BSC_RPC_URL,
+  url: "https://bsc-dataseed1.binance.org/",
   chainId: 56,
   accounts: [TS_DEPLOYER_PK],
 };
 
 export const ETH_CONFIG = {
-  type: "http" as const,
-  url: ETH_RPC_URL,
+  url: process.env.ETH_RPC_URL ||,
+  // url: "https://eth.llamarpc.com",
   chainId: 1,
   accounts: [TS_DEPLOYER_PK],
 };
 
 export const POLYGON_CONFIG = {
-  type: "http" as const,
-  url: POLYGON_RPC_URL,
+  url: "https://rpc.ankr.com/polygon",
   chainId: 137,
   accounts: [TS_DEPLOYER_PK],
 };
 
 export const OP_CONFIG = {
-  type: "http" as const,
-  url: OP_RPC_URL,
+  url: "https://optimism.llamarpc.com",
   chainId: 10,
   accounts: [TS_DEPLOYER_PK],
 };
 
-export default defineConfig({
-  plugins: [hardhatToolboxMochaEthers, hardhatVerify],
+const config: HardhatUserConfig = {
+  defaultNetwork: "hardhat",
+  etherscan: {
+    apiKey: {
+      mainnet: ETHERSCAN_API_KEY,
+      arbitrumOne: ETHERSCAN_API_KEY,
+      base: ETHERSCAN_API_KEY,
+      polygon: ETHERSCAN_API_KEY,
+    },
+    customChains: [
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.etherscan.io/v2/api",
+          browserURL: "https://basescan.org"
+        }
+      },
+      {
+        network: "arbitrumOne",
+        chainId: 42161,
+        urls: {
+          apiURL: "https://api.etherscan.io/v2/api",
+          browserURL: "https://arbiscan.io"
+        }
+      },
+      {
+        network: "polygon",
+        chainId: 137,
+        urls: {
+          apiURL: "https://api.etherscan.io/v2/api",
+          browserURL: "https://polygonscan.com"
+        }
+      }
+    ]
+  },
   networks: {
     hardhat: {
+      enableTransientStorage: true,
       gasPrice: 10e9,
-      type: "http",
-      url: HARDHAT_RPC_URL,
     },
     mainnet: ETH_CONFIG,
     arbitrum: ARB_CONFIG,
     base: BASE_CONFIG,
     matic: POLYGON_CONFIG,
+  },
+  gasReporter: {
+    enabled: false,
+    currency: "USD",
+    noColors: false,
+    token: "ETH",
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   solidity: {
     compilers: [
@@ -128,7 +148,12 @@ export default defineConfig({
           viaIR: true,
           optimizer: {
             enabled: true,
-            runs: 100, // Reduced runs for stack depth issues
+            runs: 200,
+            // details: {
+            //   yulDetails: {
+            //     optimizerSteps: "u",
+            //   },
+            // },
           },
         },
       },
@@ -139,43 +164,33 @@ export default defineConfig({
           optimizer: {
             enabled: true,
             runs: 200,
+            // details: {
+            //   yulDetails: {
+            //     optimizerSteps: "u",
+            //   },
+            // },
           },
         },
       },
     ],
-    overrides: {
-      "src/contracts/wrappers/TSWrapperLedger_V1.sol": {
-        version: "0.8.17",
-        settings: {
-          viaIR: true,
-          optimizer: {
-            enabled: true,
-            runs: 1, // Minimum optimization for this specific contract
-          },
-        },
-      },
-    },
   },
   paths: {
     artifacts: "./artifacts",
     cache: "./cache",
-    sources: "./src/contracts/misc", // Only build contracts in misc folder
+    sources: "./src/contracts",
     tests: "./test",
   },
   typechain: {
     outDir: "src/types",
-    alwaysGenerateOverloads: false,
-    dontOverrideCompile: false,
+    target: "ethers-v6",
+    alwaysGenerateOverloads: false, // should overloads with full signatures like deposit(uint256) be generated always, even if there are no overloads?
+    externalArtifacts: ["externalArtifacts/*.json"], // optional array of glob patterns with external artifacts to process (for example external libs from node_modules)
+    dontOverrideCompile: false, // defaults to false
   },
-  verify: {
-    etherscan: {
-      apiKey: ETHERSCAN_API_KEY,
-    },
-    blockscout: {
-      enabled: true,
-    },
-    sourcify: {
-      enabled: true,
-    },
-  },
-});
+};
+
+if (!config.etherscan?.apiKey) {
+  throw new Error("Etherscan API key is required");
+}
+
+export default config;
